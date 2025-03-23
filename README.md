@@ -5,17 +5,6 @@
   </a>
   <h3 align="center" style="font-weight: bold">Terraform Provider for Portainer</h3>
   <p align="center">
-    <a href="https://golang.org/doc/devel/release.html">
-      <img alt="GitHub go.mod Go version" src="https://img.shields.io/github/go-mod/go-version/grulicht/terraform-provider-portainer">
-    </a>
-    <a href="https://github.com/grulicht/terraform-provider-portainer/actions?query=workflow%3A%22Terraform+Provider+CI%22">
-      <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/grulicht/terraform-provider-portainer/go.yml?branch=main">
-    </a>
-    <a href="https://github.com/grulicht/terraform-provider-portainer/releases">
-      <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/grulicht/terraform-provider-portainer?include_prereleases">
-    </a>
-  </p>
-  <p align="center">
     <a href="https://github.com/grulicht/terraform-provider-portainer/tree/main/docs"><strong>Explore the docs »</strong></a>
   </p>
 </p>
