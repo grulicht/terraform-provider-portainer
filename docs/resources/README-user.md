@@ -11,8 +11,8 @@ The `portainer_user` resource allows you to manage user accounts in Portainer.
 ### Internal User
 
 ```hcl
-resource "portainer_user" "local_user" {
-  username = "terraformuser"
+resource "portainer_user" "your-user" {
+  username = "youruser"
   password = "strong-password"
   role     = 1 # 1 = admin, 2 = standard user
 }
@@ -20,8 +20,8 @@ resource "portainer_user" "local_user" {
 
 ### LDAP User
 ```hcl
-resource "portainer_user" "ldap_user" {
-  username  = "ldap.john.doe"
+resource "portainer_user" "your-user" {
+  username  = "youruser"
   role      = 2
   ldap_user = true
 }

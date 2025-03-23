@@ -7,8 +7,8 @@ The `portainer_environment` resource allows you to register environments (a.k.a.
 ### Register Docker host (non-agent)
 
 ```hcl
-resource "portainer_environment" "docker_host" {
-  name                = "My Docker Host"
+resource "portainer_environment" "your-host" {
+  name                = "Your Host"
   environment_address = "tcp://192.168.1.100:2375"
   type                = 1
   group_id            = 1
@@ -16,8 +16,8 @@ resource "portainer_environment" "docker_host" {
 
 ### Register agent-based environment
 ```hcl
-resource "portainer_environment" "agent_host" {
-  name                = "Agent Node"
+resource "portainer_environment" "your-host" {
+  name                = "Your Host"
   environment_address = "tcp://192.168.1.101:9001"
   type                = 2
   group_id            = 1

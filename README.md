@@ -5,9 +5,6 @@
   </a>
   <h3 align="center" style="font-weight: bold">Terraform Provider for Portainer</h3>
   <p align="center">
-    <a href="https://github.com/grulicht/terraform-provider-portainer/graphs/contributors">
-      <img alt="Contributors" src="https://img.shields.io/github/contributors/grulicht/terraform-provider-portainer">
-    </a>
     <a href="https://golang.org/doc/devel/release.html">
       <img alt="GitHub go.mod Go version" src="https://img.shields.io/github/go-mod/go-version/grulicht/terraform-provider-portainer">
     </a>
@@ -74,6 +71,19 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `endpoint` | string | ✅ yes   | The URL of the Portainer instance. `/api` will be appended automatically if missing. |
 | `api_key`  | string | ✅ yes   | API key used to authenticate requests. Only `X-API-Key` is supported.       |
 
+## Testing
+
+For testing locally, run the docker compose to spin up a portainer web ui:
+
+```sh
+docker compose up
+```
+
+Access `http://localhost:9000` on your browser, apply your terraform templates and watch them going live.
+
+## Usage
+
+See our [examples](./docs/resources/) per resources in docs.
 
 ## Resources
 
@@ -85,16 +95,15 @@ $ export PORTAINER_API_KEY="your-api-key"
 | [`portainer_tag`](docs/resources/README-tag.md)                  | Manages Portainer tags          |
 | [`portainer_endpoint_group`](docs/resources/README-endpoint-group.md) | Manages Portainer endpoint groups |
 
-## Testing
+## Roadmap
 
-For testing locally, run the docker compose to spin up a portainer web ui:
-
-```sh
-docker compose up
-```
-
-Access `http://localhost:9000` on your browser, apply your terraform templates and watch them going live.
+See the [open issues](https://github.com/grulicht/terraform-provider-portainer/issues) for a list of proposed features (and known issues). See [CONTRIBUTING](./.github/CONTRIBUTING.md) for more information.
 
 ## License
 
 All versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](./LICENSE) for more information.
+
+## Acknowledgements
+
+- [HashiCorp Terraform](https://www.hashicorp.com/products/terraform)
+- [MinIO](https://portainer.io)
