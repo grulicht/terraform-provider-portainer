@@ -1,0 +1,57 @@
+# 🌐 Resource Documentation: `portainer_environment`
+
+The `portainer_environment` resource allows you to register environments (a.k.a. endpoints) in Portainer.
+
+## Example Usage
+
+### Register Docker host (non-agent)
+
+```hcl
+resource "portainer_environment" "docker_host" {
+  name                = "My Docker Host"
+  environment_address = "tcp://192.168.1.100:2375"
+  type                = 1
+  group_id            = 1
+}
+
+### Register agent-based environment
+```hcl
+resource "portainer_environment" "agent_host" {
+  name                = "Agent Node"
+  environment_address = "tcp://192.168.1.101:9001"
+  type                = 2
+  group_id            = 1
+  tag_ids             = [1, 2]
+}
+```
+## Lifecycle & Behavior
+
+Environments are recreated if any of the attributes change (e.g., name, address, type, group_id, tag_ids).
+
+- To delete an environment created via Terraform, simply run:
+```hcl
+terraform destroy
+```
+
+- To update an environment, change any attribute and re-apply::
+```hcl
+terraform apply
+```
+> ⚠️ Portainer does not allow updating existing environments via API. Any change will destroy and recreate the environment.
+
+## Arguments Reference
+
+| Name                  | Type       | Required                     | Description                                                                                      |
+|-----------------------|------------|------------------------------|--------------------------------------------------------------------------------------------------|
+| `name`                | string     | ✅ yes                       | Display name of the environment in Portainer.                                                    |
+| `environment_address` | string     | ✅ yes                       | Target environment address (e.g. `tcp://host:9001`).                                             |
+| `type`                | int        | ✅ yes                       | Environment type: `1` = Docker, `2` = Agent, `3` = Azure, `4` = Edge Agent, `5` = Kubernetes.     |
+| `group_id`            | int        | 🚫 optional (default `1`)   | ID of the Portainer endpoint group. Default is `1` (Unassigned).                                 |
+| `tag_ids`             | list(int)  | 🚫 optional                 | List of Portainer tag IDs to assign to the environment. Only used during creation.              |
+
+
+## Attributes Reference
+
+| Name | Description              |
+|------|--------------------------|
+| `id` | ID of the Portainer environment |
