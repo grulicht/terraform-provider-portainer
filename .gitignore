@@ -2,7 +2,6 @@
 **/.terraform/*
 terraform-provider-*
 .terraform.lock.hcl
-*.tf
 *.backup
 
 # .tfstate files

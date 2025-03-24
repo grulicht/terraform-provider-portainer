@@ -1,9 +1,27 @@
 
 <p align="center">
+  <a href="https://registry.terraform.io/providers/grulicht/portainer/latest/docs">
+    <img src="https://www.terraform.io/_next/static/media/terraform-community_on-light.cda79e7c.svg" alt="Terraform Logo" width="200">
+  </a>
+  &nbsp;&nbsp;&nbsp;
   <a href="https://github.com/grulicht/terraform-provider-portainer">
     <img src="https://www.portainer.io/hubfs/portainer-logo-black.svg" alt="portainer-provider-terraform" width="200">
   </a>
   <h3 align="center" style="font-weight: bold">Terraform Provider for Portainer</h3>
+  <p align="center">
+    <a href="https://github.com/grulicht/terraform-provider-portainer/graphs/contributors">
+      <img alt="Contributors" src="https://img.shields.io/github/contributors/grulicht/terraform-provider-portainer">
+    </a>
+    <a href="https://golang.org/doc/devel/release.html">
+      <img alt="GitHub go.mod Go version" src="https://img.shields.io/github/go-mod/go-version/grulicht/terraform-provider-portainer">
+    </a>
+    <a href="https://github.com/grulicht/terraform-provider-portainer/actions?query=workflow%3Arelease">
+      <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/grulicht/terraform-provider-portainer/release.yml?tag=latest&label=release">
+    </a>
+    <a href="https://github.com/grulicht/terraform-provider-portainer/releases">
+      <img alt="GitHub release (latest by date including pre-releases)" src="https://img.shields.io/github/v/release/grulicht/terraform-provider-portainer?include_prereleases">
+    </a>
+  </p>
   <p align="center">
     <a href="https://github.com/grulicht/terraform-provider-portainer/tree/main/docs"><strong>Explore the docs »</strong></a>
   </p>
@@ -11,7 +29,9 @@
 
 # Portainer CE Terraform Provider
 
-A [Terraform](https://www.terraform.io) provider to manage[Portainer](https://www.portainer.io/) resources via its REST API using Terraform. It supports provisioning and configuration of Portainer users and will be extended to support other objects such as teams, stacks, endpoints, and access control.
+A [Terraform](https://www.terraform.io) provider to manage[Portainer](https://www.portainer.io/) resources via its REST API using Terraform.
+
+It supports provisioning and configuration of Portainer users and will be extended to support other objects such as teams, stacks, endpoints, and access control.
 
 ## Requirements
 
@@ -20,6 +40,15 @@ A [Terraform](https://www.terraform.io) provider to manage[Portainer](https://ww
 - Go 1.21+ (if building from source)
 
 ## Building and Installing
+```hcl
+go build -o terraform-provider-portainer
+```
+
+## Provider Support
+| Provider       | Provider Support Status              |
+|----------------|--------------------------------------|
+| [Terraform](https://registry.terraform.io/providers/grulicht/portainer/latest)      | ![Done](https://img.shields.io/badge/status-done-brightgreen)           |
+| OpenTofu       | ![In Progress](https://img.shields.io/badge/status-in--progress-yellow) |
 
 
 ## Example Provider Configuration
@@ -30,12 +59,12 @@ provider "portainer" {
   api_key  = "your-api-key"
 }
 ```
-> 🔐 **Authentication:** This provider supports only **API keys** via the `X-API-Key` header. JWT tokens are not supported.
 
 ## Authentication
 - Static API key
 
 Static credentials can be provided by adding the `api_key` variables in-line in the Portainer provider block:
+> 🔐 **Authentication:** This provider supports only **API keys** via the `X-API-Key` header. JWT tokens curentlly are not supported in this provider.
 
 Usage:
 
@@ -58,7 +87,7 @@ $ export PORTAINER_API_KEY="your-api-key"
 | Name       | Type   | Required | Description                                                                 |
 |------------|--------|----------|-----------------------------------------------------------------------------|
 | `endpoint` | string | ✅ yes   | The URL of the Portainer instance. `/api` will be appended automatically if missing. |
-| `api_key`  | string | ✅ yes   | API key used to authenticate requests. Only `X-API-Key` is supported.       |
+| `api_key`  | string | ✅ yes   | API key used to authenticate requests.                                      |
 
 ## Testing
 
@@ -74,15 +103,34 @@ Access `http://localhost:9000` on your browser, apply your terraform templates a
 
 See our [examples](./docs/resources/) per resources in docs.
 
-## Resources
+## 🧩 Supported Resources
 
-| Resource                             | Description                      |
-|--------------------------------------|----------------------------------|
-| [`portainer_user`](docs/resources/README-user.md)                | Manages Portainer users         |
-| [`portainer_team`](docs/resources/README-team.md)                | Manages Portainer teams         |
-| [`portainer_environment`](docs/resources/README-environment.md)  | Manages Portainer environments  |
-| [`portainer_tag`](docs/resources/README-tag.md)                  | Manages Portainer tags          |
-| [`portainer_endpoint_group`](docs/resources/README-endpoint-group.md) | Manages Portainer endpoint groups |
+| Resource                   | Documentation                                               | Example                                 | Status                                                                 |
+|----------------------------|-------------------------------------------------------------|-----------------------------------------|------------------------------------------------------------------------|
+| `portainer_user`           | [📘 user.md](docs/resources/user.md)                       | [📂 example](examples/user/)             | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_team`           | [📘 team.md](docs/resources/team.md)                       | [📂 example](examples/team/)             | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_environment`    | [📘 environment.md](docs/resources/environment.md)         | [📂 example](examples/environment/)      | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_tag`            | [📘 tag.md](docs/resources/tag.md)                         | [📂 example](examples/tag/)              | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_endpoint_group` | [📘 endpoint_group.md](docs/resources/endpoint_group.md)   | [📂 example](examples/endpoint_group/)   | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_registry`       | [📘 registry.md](docs/resources/registry.md)               | [📂 example](examples/registry/)         | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_backup`         | [📘 backup.md](docs/resources/backup.md)                   | [📂 example](examples/backup/)           | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_stack`          | [📘 stack.md](docs/resources/stack.md)                     | [📂 example](examples/stack/)            | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_auth`           | [📘 auth.md](docs/resources/auth.md)                       | [📂 example](examples/auth/)             | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_edge_group`     | [📘 edge_group.md](docs/resources/edge_group.md)           | [📂 example](examples/edge_group/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_edge_stack`     | [📘 edge_stack.md](docs/resources/edge_stack.md)           | [📂 example](examples/edge_stack/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_edge_job`       | [📘 edge_job.md](docs/resources/edge_job.md)               | [📂 example](examples/edge_job/)         | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_custom_template`| [📘 custom_template.md](docs/resources/custom_template.md) | [📂 example](examples/custom_template/)  | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_ldap_check`     | [📘 ldap_check.md](docs/resources/ldap_check.md)           | [📂 example](examples/ldap_check/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+
+---
+
+### 💡 Missing a resource?
+
+Is there a Portainer resource you'd like to see supported?
+
+👉 [Open an issue](https://github.com/grulicht/terraform-provider-portainer/issues/new?template=feature_request.md) and we’ll consider it for implementation — or even better, submit a [Pull Request](https://github.com/grulicht/terraform-provider-portainer/pulls) to contribute directly!
+
+📘 See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for guidelines.
 
 ## Roadmap
 
