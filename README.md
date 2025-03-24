@@ -138,9 +138,11 @@ See the [open issues](https://github.com/grulicht/terraform-provider-portainer/i
 
 ## License
 
-All versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](./LICENSE) for more information.
+This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](./LICENSE) for more information.
+
+## Authors
+Created by [Tomáš Grulich](https://www.linkedin.com/in/tom%C3%A1%C5%A1-grulich-184646239/) - to.grulich@gmail.com
 
 ## Acknowledgements
-
 - [HashiCorp Terraform](https://www.hashicorp.com/products/terraform)
-- [MinIO](https://portainer.io)
+- [Portainer](https://portainer.io)

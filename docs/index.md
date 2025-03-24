@@ -4,8 +4,13 @@ A [Terraform](https://www.terraform.io) provider to manage[Portainer](https://ww
 
 It supports provisioning and configuration of Portainer users and will be extended to support other objects such as teams, compose/stacks, endpoints, and access control.
 
-## Example Provider Configuration
+## Provider Support
+| Provider       | Provider Support Status              |
+|----------------|--------------------------------------|
+| [Terraform](https://registry.terraform.io/providers/grulicht/portainer/latest)      | ![Done](https://img.shields.io/badge/status-done-brightgreen)           |
+| OpenTofu       | ![In Progress](https://img.shields.io/badge/status-in--progress-yellow) |
 
+## Example Provider Configuration
 ```hcl
 provider "portainer" {
   endpoint = "..."
@@ -28,7 +33,6 @@ provider "portainer" {
 }
 ```
 ### Environment variables
-
 You can provide your configuration via the environment variables representing your minio credentials:
 
 ```hcl
@@ -37,7 +41,6 @@ $ export PORTAINER_API_KEY="your-api-key"
 ```
 
 ## Arguments Reference
-
 | Name       | Type   | Required | Description                                                                 |
 |------------|--------|----------|-----------------------------------------------------------------------------|
 | `endpoint` | string | ✅ yes   | The URL of the Portainer instance. `/api` will be appended automatically if missing. |
@@ -45,7 +48,6 @@ $ export PORTAINER_API_KEY="your-api-key"
 
 
 ## 🧩 Supported Resources
-
 | Resource                   | Status                                                                 |
 |----------------------------|------------------------------------------------------------------------|
 | `portainer_user`           | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
@@ -66,9 +68,18 @@ $ export PORTAINER_API_KEY="your-api-key"
 ---
 
 ### 💡 Missing a resource?
-
 Is there a Portainer resource you'd like to see supported?
 
 👉 [Open an issue](https://github.com/grulicht/terraform-provider-portainer/issues/new?template=feature_request.md) and we’ll consider it for implementation — or even better, submit a [Pull Request](https://github.com/grulicht/terraform-provider-portainer/pulls) to contribute directly!
 
 📘 See [CONTRIBUTING.md](https://github.com/grulicht/terraform-provider-portainer/blob/main/.github/CONTRIBUTING.md) for guidelines.
+
+## License
+This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](./LICENSE) for more information.
+
+## Authors
+Created by [Tomáš Grulich](https://www.linkedin.com/in/tom%C3%A1%C5%A1-grulich-184646239/) - to.grulich@gmail.com
+
+## Acknowledgements
+- [HashiCorp Terraform](https://www.hashicorp.com/products/terraform)
+- [Portainer](https://portainer.io)
