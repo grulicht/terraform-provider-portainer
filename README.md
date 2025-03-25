@@ -164,7 +164,7 @@ See the [open issues](https://github.com/grulicht/terraform-provider-portainer/i
 
 ## License
 
-This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](./LICENSE) for more information.
+This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](https://github.com/grulicht/terraform-provider-portainer/blob/main/LICENSE) for more information.
 
 ## Authors
 Created by [Tomáš Grulich](https://github.com/grulicht) - to.grulich@gmail.com
