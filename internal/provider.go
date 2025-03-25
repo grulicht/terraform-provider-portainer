@@ -32,6 +32,9 @@ func Provider() *schema.Provider {
 	        "portainer_environment":     resourceEnvironment(),
 	        "portainer_endpoint_group":  resourceEndpointGroup(),
 	        "portainer_tag":             resourceTag(),
+			"portainer_registry":        resourceRegistry(),
+			"portainer_backup":          resourceBackup(),
+			"portainer_backup_s3":       resourceBackupS3(),
 		},
 		ConfigureContextFunc: configureProvider,
 	}

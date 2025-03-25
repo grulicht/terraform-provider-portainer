@@ -7,6 +7,10 @@
   <a href="https://github.com/grulicht/terraform-provider-portainer">
     <img src="https://www.portainer.io/hubfs/portainer-logo-black.svg" alt="portainer-provider-terraform" width="200">
   </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://search.opentofu.org/provider/grulicht/portainer/latest">
+    <img src="https://raw.githubusercontent.com/opentofu/brand-artifacts/main/full/transparent/SVG/on-dark.svg#gh-dark-mode-only" alt="portainer-provider-opentofu" width="200">
+  </a>
   <h3 align="center" style="font-weight: bold">Terraform Provider for Portainer</h3>
   <p align="center">
     <a href="https://github.com/grulicht/terraform-provider-portainer/graphs/contributors">
@@ -41,14 +45,14 @@ It supports provisioning and configuration of Portainer users and will be extend
 
 ## Building and Installing
 ```hcl
-go build -o terraform-provider-portainer
+make build
 ```
 
 ## Provider Support
 | Provider       | Provider Support Status              |
 |----------------|--------------------------------------|
 | [Terraform](https://registry.terraform.io/providers/grulicht/portainer/latest)      | ![Done](https://img.shields.io/badge/status-done-brightgreen)           |
-| OpenTofu       | ![In Progress](https://img.shields.io/badge/status-in--progress-yellow) |
+| [OpenTofu](https://search.opentofu.org/provider/grulicht/portainer/latest)       | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 
 
 ## Example Provider Configuration
@@ -89,16 +93,6 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `endpoint` | string | ✅ yes   | The URL of the Portainer instance. `/api` will be appended automatically if missing. |
 | `api_key`  | string | ✅ yes   | API key used to authenticate requests.                                      |
 
-## Testing
-
-For testing locally, run the docker compose to spin up a portainer web ui:
-
-```sh
-docker compose up
-```
-
-Access `http://localhost:9000` on your browser, apply your terraform templates and watch them going live.
-
 ## Usage
 
 See our [examples](./docs/resources/) per resources in docs.
@@ -112,8 +106,9 @@ See our [examples](./docs/resources/) per resources in docs.
 | `portainer_environment`    | [📘 environment.md](docs/resources/environment.md)         | [📂 example](examples/environment/)      | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_tag`            | [📘 tag.md](docs/resources/tag.md)                         | [📂 example](examples/tag/)              | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_endpoint_group` | [📘 endpoint_group.md](docs/resources/endpoint_group.md)   | [📂 example](examples/endpoint_group/)   | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
-| `portainer_registry`       | [📘 registry.md](docs/resources/registry.md)               | [📂 example](examples/registry/)         | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_backup`         | [📘 backup.md](docs/resources/backup.md)                   | [📂 example](examples/backup/)           | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_registry`       | [📘 registry.md](docs/resources/registry.md)               | [📂 example](examples/registry/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_backup`         | [📘 backup.md](docs/resources/backup.md)                   | [📂 example](examples/backup/)           | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_backup_s3`      | [📘 backup.md](docs/resources/backup_s3.md)                | [📂 example](examples/backup_s3/)        | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_stack`          | [📘 stack.md](docs/resources/stack.md)                     | [📂 example](examples/stack/)            | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 | `portainer_auth`           | [📘 auth.md](docs/resources/auth.md)                       | [📂 example](examples/auth/)             | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 | `portainer_edge_group`     | [📘 edge_group.md](docs/resources/edge_group.md)           | [📂 example](examples/edge_group/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
@@ -132,6 +127,37 @@ Is there a Portainer resource you'd like to see supported?
 
 📘 See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for guidelines.
 
+## Testing
+To test the provider locally, start the Portainer Web UI using Docker Compose:
+```sh
+make up
+```
+Then open http://localhost:9000 in your browser.
+You can now apply your Terraform templates and observe changes live in the UI.
+
+### Testing a new version of the Portainer provider
+After making changes to the provider source code, follow these steps:
+Build the provider binary:
+```sh
+make build
+```
+Install the binary into the local Terraform plugin directory:
+```sh
+make install-plugin
+```
+Update your main.tf to use the local provider source
+Add the following to your Terraform configuration:
+```sh
+terraform {
+  required_providers {
+    portainer = {
+      source  = "localdomain/local/portainer"
+    }
+  }
+}
+```
+Now you're ready to test your provider against the local Portainer instance.
+
 ## Roadmap
 
 See the [open issues](https://github.com/grulicht/terraform-provider-portainer/issues) for a list of proposed features (and known issues). See [CONTRIBUTING](./.github/CONTRIBUTING.md) for more information.
@@ -141,8 +167,9 @@ See the [open issues](https://github.com/grulicht/terraform-provider-portainer/i
 This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](./LICENSE) for more information.
 
 ## Authors
-Created by [Tomáš Grulich](https://www.linkedin.com/in/tom%C3%A1%C5%A1-grulich-184646239/) - to.grulich@gmail.com
+Created by [Tomáš Grulich](https://github.com/grulicht) - to.grulich@gmail.com
 
 ## Acknowledgements
 - [HashiCorp Terraform](https://www.hashicorp.com/products/terraform)
 - [Portainer](https://portainer.io)
+- [OpenTofu](https://opentofu.org/)

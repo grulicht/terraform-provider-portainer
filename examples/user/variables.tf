@@ -7,6 +7,7 @@ variable "portainer_url" {
 variable "portainer_api_key" {
   description = "Default Portainer Admin API Key"
   type        = string
+  sensitive   = true
   # default     = "your-api-key-from-portainer"
 }
 
@@ -19,6 +20,7 @@ variable "portainer_user_username" {
 variable "portainer_user_password" {
   description = "Portainer password used for resource provisioning"
   type        = string
+  sensitive   = true
   # default     = "password"
 }
 

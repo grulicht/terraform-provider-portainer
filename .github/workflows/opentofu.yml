@@ -3,13 +3,12 @@ name: OpenTofu CI
 on:
   push:
     branches:
-      - xyz
-  #    - main
-  #  tags:
-  #    - "v*"
-  # pull_request:
-  #  branches:
-  #    - main
+      - main
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - main
 
 jobs:
   opentofu:

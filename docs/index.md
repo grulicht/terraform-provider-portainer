@@ -8,7 +8,7 @@ It supports provisioning and configuration of Portainer users and will be extend
 | Provider       | Provider Support Status              |
 |----------------|--------------------------------------|
 | [Terraform](https://registry.terraform.io/providers/grulicht/portainer/latest)      | ![Done](https://img.shields.io/badge/status-done-brightgreen)           |
-| OpenTofu       | ![In Progress](https://img.shields.io/badge/status-in--progress-yellow) |
+| [OpenTofu](https://search.opentofu.org/provider/grulicht/portainer/latest)       | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 
 ## Example Provider Configuration
 ```hcl
@@ -55,8 +55,9 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `portainer_environment`    | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_tag`            | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_endpoint_group` | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
-| `portainer_registry`       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_backup`         | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_registry`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_backup`         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_backup_s3`      | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_stack`          | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 | `portainer_auth`           | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 | `portainer_edge_group`     | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
@@ -78,8 +79,9 @@ Is there a Portainer resource you'd like to see supported?
 This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](./LICENSE) for more information.
 
 ## Authors
-Created by [Tomáš Grulich](https://www.linkedin.com/in/tom%C3%A1%C5%A1-grulich-184646239/) - to.grulich@gmail.com
+Created by [Tomáš Grulich](https://github.com/grulicht) - to.grulich@gmail.com
 
 ## Acknowledgements
 - [HashiCorp Terraform](https://www.hashicorp.com/products/terraform)
 - [Portainer](https://portainer.io)
+- [OpenTofu](https://opentofu.org/)

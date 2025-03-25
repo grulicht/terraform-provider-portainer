@@ -17,8 +17,11 @@ plan.bin
 # .DS_Store file
 .DS_Store 
 
-#go packages
+# go packages
 vendor/*
 .vscode
 .idea
 dev.tfrc
+
+# testing providers
+backup.tar.gz

@@ -7,6 +7,7 @@ help:
 	@echo ""
 	@echo "Available targets:"
 	@echo "  build          Compile the Terraform provider binary"
+	@echo "  install-plugin Install compiled provider binary to local Terraform plugin directory"
 	@echo "  init           Initialize Terraform in each examples/* project"
 	@echo "  validate       Validate Terraform configuration in each project"
 	@echo "  fmt-check      Check formatting of Terraform files"
@@ -16,6 +17,8 @@ help:
 	@echo "  o-validate     Validate OpenTofu configuration"
 	@echo "  o-fmt-check    Check formatting of OpenTofu files"
 	@echo "  o-fmt          Format OpenTofu files"
+	@echo "  up             Start Docker Compose services"
+	@echo "  down           Stop Docker Compose services"
 	@echo ""
 	@echo "Environment:"
 	@echo "  TDIR           Directory to run Terraform/OpenTofu in (set internally)"
@@ -26,6 +29,11 @@ help:
 .PHONY: build
 build:
 	go build -o terraform-provider-portainer
+
+.PHONY: install-plugin
+install-plugin:
+	mkdir -p ~/.terraform.d/plugins/localdomain/local/portainer/0.1.0/linux_amd64/
+	cp terraform-provider-portainer ~/.terraform.d/plugins/localdomain/local/portainer/0.1.0/linux_amd64/
 
 .PHONY: init
 init:
@@ -63,7 +71,6 @@ docs:
 		fi; \
 	done
 
-
 ### Opentofu
 .PHONY: o-init
 o-init:
@@ -91,3 +98,12 @@ o-fmt:
 
 _opentofu:
 	tofu -chdir=${TDIR} ${TCMD}
+
+### Docker
+.PHONY: up
+up:
+	docker compose up -d
+
+.PHONY: down
+down:
+	docker compose down
