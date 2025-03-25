@@ -132,7 +132,7 @@ To test the provider locally, start the Portainer Web UI using Docker Compose:
 ```sh
 make up
 ```
-Then open http://localhost:9000 in your browser.
+Then open `http://localhost:9000` in your browser.
 You can now apply your Terraform templates and observe changes live in the UI.
 
 ### Testing a new version of the Portainer provider
