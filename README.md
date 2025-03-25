@@ -33,7 +33,7 @@
 
 # Portainer CE Terraform Provider
 
-A [Terraform](https://www.terraform.io) provider to manage[Portainer](https://www.portainer.io/) resources via its REST API using Terraform.
+A [Terraform](https://www.terraform.io) provider to manage [Portainer](https://www.portainer.io/) resources via its REST API using Terraform.
 
 It supports provisioning and configuration of Portainer users and will be extended to support other objects such as teams, stacks, endpoints, and access control.
 
@@ -109,11 +109,11 @@ See our [examples](./docs/resources/) per resources in docs.
 | `portainer_registry`       | [📘 registry.md](docs/resources/registry.md)               | [📂 example](examples/registry/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_backup`         | [📘 backup.md](docs/resources/backup.md)                   | [📂 example](examples/backup/)           | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_backup_s3`      | [📘 backup.md](docs/resources/backup_s3.md)                | [📂 example](examples/backup_s3/)        | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
-| `portainer_stack`          | [📘 stack.md](docs/resources/stack.md)                     | [📂 example](examples/stack/)            | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_auth`           | [📘 auth.md](docs/resources/auth.md)                       | [📂 example](examples/auth/)             | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_edge_group`     | [📘 edge_group.md](docs/resources/edge_group.md)           | [📂 example](examples/edge_group/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_auth`           | [📘 auth.md](docs/resources/auth.md)                       | [📂 example](examples/auth/)             | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_edge_group`     | [📘 edge_group.md](docs/resources/edge_group.md)           | [📂 example](examples/edge_group/)       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_edge_stack`     | [📘 edge_stack.md](docs/resources/edge_stack.md)           | [📂 example](examples/edge_stack/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_edge_job`       | [📘 edge_job.md](docs/resources/edge_job.md)               | [📂 example](examples/edge_job/)         | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_edge_job`       | [📘 edge_job.md](docs/resources/edge_job.md)               | [📂 example](examples/edge_job/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_stack`          | [📘 stack.md](docs/resources/stack.md)                     | [📂 example](examples/stack/)            | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 | `portainer_custom_template`| [📘 custom_template.md](docs/resources/custom_template.md) | [📂 example](examples/custom_template/)  | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 | `portainer_ldap_check`     | [📘 ldap_check.md](docs/resources/ldap_check.md)           | [📂 example](examples/ldap_check/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 

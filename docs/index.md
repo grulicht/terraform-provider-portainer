@@ -1,6 +1,6 @@
 # Portainer Provider
 
-A [Terraform](https://www.terraform.io) provider to manage[Portainer](https://www.portainer.io/) resources via its REST API using Terraform.
+A [Terraform](https://www.terraform.io) provider to manage [Portainer](https://www.portainer.io/) resources via its REST API using Terraform.
 
 It supports provisioning and configuration of Portainer users and will be extended to support other objects such as teams, compose/stacks, endpoints, and access control.
 
@@ -58,11 +58,11 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `portainer_registry`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_backup`         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_backup_s3`      | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
-| `portainer_stack`          | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_auth`           | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_edge_group`     | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_auth`           | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_edge_group`     | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_edge_stack`     | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_edge_job`       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_edge_job`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_stack`          | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 | `portainer_custom_template`| ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 | `portainer_ldap_check`     | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 

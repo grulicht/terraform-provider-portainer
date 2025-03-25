@@ -16,12 +16,16 @@ resource "portainer_environment" "your-host" {
 
 ### Register agent-based environment
 ```hcl
+resource "portainer_tag" "your-tag" {
+  name = "your-tag"
+}
+
 resource "portainer_environment" "your-host" {
   name                = "Your Host"
   environment_address = "tcp://192.168.1.101:9001"
   type                = 2
   group_id            = 1
-  tag_ids             = [1, 2]
+  tag_ids             = [portainer_tag.your-group.id]
 }
 ```
 ## Lifecycle & Behavior

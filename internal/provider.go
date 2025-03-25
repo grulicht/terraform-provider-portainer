@@ -35,6 +35,9 @@ func Provider() *schema.Provider {
 			"portainer_registry":        resourceRegistry(),
 			"portainer_backup":          resourceBackup(),
 			"portainer_backup_s3":       resourceBackupS3(),
+			"portainer_edge_group":      resourceEdgeGroup(),
+			"portainer_edge_job":        resourceEdgeJob(),
+			"portainer_auth":            resourceAuth(),
 		},
 		ConfigureContextFunc: configureProvider,
 	}
