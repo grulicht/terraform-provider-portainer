@@ -23,7 +23,7 @@
 | <a name="input_portainer_url"></a> [portainer\_url](#input\_portainer\_url) | Default Portainer URL | `string` | n/a | yes |
 | <a name="input_s3_access_key"></a> [s3\_access\_key](#input\_s3\_access\_key) | AWS or compatible S3 Access Key | `string` | n/a | yes |
 | <a name="input_s3_bucket"></a> [s3\_bucket](#input\_s3\_bucket) | S3 bucket name where backups will be stored | `string` | n/a | yes |
-| <a name="input_s3_endpoint"></a> [s3\_endpoint](#input\_s3\_endpoint) | S3-compatible endpoint URL (e.g., https://s3.example.com) | `string` | n/a | yes |
+| <a name="input_s3_endpoint"></a> [s3\_endpoint](#input\_s3\_endpoint) | S3-compatible endpoint URL | `string` | n/a | yes |
 | <a name="input_s3_region"></a> [s3\_region](#input\_s3\_region) | Region for S3 bucket (e.g., eu-central-1) | `string` | `"eu-central-1"` | no |
 | <a name="input_s3_secret_key"></a> [s3\_secret\_key](#input\_s3\_secret\_key) | AWS or compatible S3 Secret Access Key | `string` | n/a | yes |
 <!-- END_TF_DOCS -->

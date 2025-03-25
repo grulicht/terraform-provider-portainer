@@ -35,7 +35,7 @@ variable "s3_region" {
 }
 
 variable "s3_endpoint" {
-  description = "S3-compatible endpoint URL (e.g., https://s3.example.com)"
+  description = "S3-compatible endpoint URL"
   type        = string
 }
 
