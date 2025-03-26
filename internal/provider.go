@@ -38,6 +38,9 @@ func Provider() *schema.Provider {
 			"portainer_edge_group":      resourceEdgeGroup(),
 			"portainer_edge_job":        resourceEdgeJob(),
 			"portainer_auth":            resourceAuth(),
+			"portainer_edge_stack":      resourceEdgeStack(),
+			"portainer_custom_template": resourceCustomTemplate(),
+
 		},
 		ConfigureContextFunc: configureProvider,
 	}

@@ -111,11 +111,11 @@ See our [examples](./docs/resources/) per resources in docs.
 | `portainer_backup_s3`      | [📘 backup.md](docs/resources/backup_s3.md)                | [📂 example](examples/backup_s3/)        | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_auth`           | [📘 auth.md](docs/resources/auth.md)                       | [📂 example](examples/auth/)             | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_edge_group`     | [📘 edge_group.md](docs/resources/edge_group.md)           | [📂 example](examples/edge_group/)       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
-| `portainer_edge_stack`     | [📘 edge_stack.md](docs/resources/edge_stack.md)           | [📂 example](examples/edge_stack/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_edge_stack`     | [📘 edge_stack.md](docs/resources/edge_stack.md)           | [📂 example](examples/edge_stack/)       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_edge_job`       | [📘 edge_job.md](docs/resources/edge_job.md)               | [📂 example](examples/edge_job/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_stack`          | [📘 stack.md](docs/resources/stack.md)                     | [📂 example](examples/stack/)            | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_custom_template`| [📘 custom_template.md](docs/resources/custom_template.md) | [📂 example](examples/custom_template/)  | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
-| `portainer_ldap_check`     | [📘 ldap_check.md](docs/resources/ldap_check.md)           | [📂 example](examples/ldap_check/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_custom_template`| [📘 custom_template.md](docs/resources/custom_template.md) | [📂 example](examples/custom_template/)  | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_container_exec` | [📘 container_exec.md](docs/resources/container_exec.md)           | [📂 example](examples/container_exec/)       | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
 
 ---
 

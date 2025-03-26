@@ -32,7 +32,7 @@ variable "edge_job_endpoints" {
 }
 
 variable "edge_job_recurring" {
-  type        = bool
+  type = bool
   # default     = true
   description = "Whether the edge job should be recurring"
 }
