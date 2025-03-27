@@ -38,7 +38,7 @@ variable "stack_endpoint_id" {
 variable "stack_file_content" {
   description = "Inline Docker Compose file content"
   type        = string
-  default = <<-EOT
+  default     = <<-EOT
     version: "3"
     services:
       web:
