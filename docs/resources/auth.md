@@ -1,11 +1,8 @@
 # 🔐 **Resource Documentation: portainer_auth**
 
-```hcl
 # portainer_auth
-
 The `portainer_auth` resource allows you to authenticate to the Portainer API using a username and password.
 It returns a JWT token that can be used for other API calls or debug purposes.
-```
 
 ## Example Usage
 ### Create Backup

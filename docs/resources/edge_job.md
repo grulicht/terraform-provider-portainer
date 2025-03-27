@@ -1,14 +1,10 @@
 # 🧭 **Resource Documentation: `portainer_edge_job`**
 
-```hcl
 # portainer_edge_job
-
 The `portainer_edge_job` resource allows you to create and schedule Edge Jobs in Portainer.
 You can use either inline `file_content` or upload a script via `file_path`.
-```
 
 ## Example Usage
-
 ### Create Edge Job using file_content
 ```hcl
 resource "portainer_edge_group" "static_group" {

@@ -1,11 +1,8 @@
 # 👥🌐 **Resource Documentation: `portainer_edge_group`**
 
-```hcl
 # portainer_edge_group
-
 The `portainer_edge_group` resource allows you to manage Edge Groups in Portainer.
 You can create both static and dynamic edge groups using this resource.
-```
 
 ## Example Usage
 

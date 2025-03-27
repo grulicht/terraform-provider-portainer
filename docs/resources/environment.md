@@ -1,5 +1,6 @@
 # 🌐 Resource Documentation: `portainer_environment`
 
+# portainer_environment
 The `portainer_environment` resource allows you to register environments (a.k.a. endpoints) in Portainer.
 
 ## Example Usage

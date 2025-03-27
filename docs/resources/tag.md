@@ -1,10 +1,7 @@
 # 🏷️ **Resource Documentation: `portainer_tag`**
 
-```hcl
 # portainer_tag
-
 The `portainer_tag` resource allows you to manage tags in Portainer.
-```
 
 ## Example Usage
 

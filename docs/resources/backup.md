@@ -1,11 +1,7 @@
 # 💾 **Resource Documentation: portainer_backup**
 
-```hcl
 # portainer_backup
-
 The `portainer_backup` resource allows you to trigger a backup of your Portainer instance directly via Terraform.
-
-```
 > ⚠️ Note: The backup is saved locally at the path specified by output_path.
 The backup is encrypted using the password.
 

@@ -1,10 +1,7 @@
 # 👤 **Resource Documentation: `portainer_user`**
 
-```markdown
 # portainer_user
-
 The `portainer_user` resource allows you to manage user accounts in Portainer.
-```
 
 ## Example Usage
 

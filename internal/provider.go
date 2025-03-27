@@ -40,7 +40,8 @@ func Provider() *schema.Provider {
 			"portainer_auth":            resourceAuth(),
 			"portainer_edge_stack":      resourceEdgeStack(),
 			"portainer_custom_template": resourceCustomTemplate(),
-
+			"portainer_stack":           resourcePortainerStack(),
+            "portainer_container_exec":  resourceContainerExec(),
 		},
 		ConfigureContextFunc: configureProvider,
 	}

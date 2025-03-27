@@ -1,11 +1,7 @@
 # 🌐 **Resource Documentation: `portainer_registry`**
 
-```hcl
 # portainer_registry
-
 The `portainer_registry` resource allows you to register container registries in Portainer.
-```
----
 
 ## Example Usage
 

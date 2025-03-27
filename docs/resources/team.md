@@ -1,11 +1,7 @@
 # 👥 **Resource Documentation: `portainer_team`**
 
-```hcl
 # portainer_team
-
 The `portainer_team` resource allows you to manage teams in Portainer.
-
-```
 
 ## Example Usage
 

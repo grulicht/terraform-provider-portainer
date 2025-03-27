@@ -1,10 +1,7 @@
 # 💾☁️ **Resource Documentation: portainer_backup_s3**
 
-```hcl
 # portainer_backup_s3
-
 The `portainer_backup_s3` resource allows you to back up your Portainer instance to an AWS S3 bucket or compatible storage system.
-```
 > ⚠️ Note: This resource performs a one-time backup upload on every terraform apply. It is not stateful and will always re-trigger.
 
 ## Example Usage

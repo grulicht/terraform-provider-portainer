@@ -10,3 +10,50 @@ variable "portainer_api_key" {
   sensitive   = true
   # default     = "your-api-key-from-portainer"
 }
+
+variable "stack_name" {
+  description = "Name of the stack"
+  type        = string
+  default     = "nginx-swarm-string"
+}
+
+variable "stack_deployment_type" {
+  description = "Deployment type: standalone, swarm, or kubernetes"
+  type        = string
+  default     = "standalone"
+}
+
+variable "stack_method" {
+  description = "Creation method: string, file, repository, or url"
+  type        = string
+  default     = "string"
+}
+
+variable "stack_endpoint_id" {
+  description = "Portainer environment/endpoint ID"
+  type        = number
+  # default     = 313
+}
+
+variable "stack_file_content" {
+  description = "Inline Docker Compose file content"
+  type        = string
+  default = <<-EOT
+    version: "3"
+    services:
+      web:
+        image: nginx
+  EOT
+}
+
+variable "stack_env_name" {
+  description = "Environment variable name"
+  type        = string
+  default     = "MY_VAR"
+}
+
+variable "stack_env_value" {
+  description = "Environment variable value"
+  type        = string
+  default     = "value"
+}

@@ -1,10 +1,7 @@
 # 📦 **Resource Documentation: `portainer_endpoint_group`**
 
-```hcl
 # portainer_endpoint_group
-
 The `portainer_endpoint_group` resource allows you to manage environment (endpoint) groups in Portainer.
-```
 
 ## Example Usage
 

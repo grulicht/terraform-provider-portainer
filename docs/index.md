@@ -62,9 +62,9 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `portainer_edge_group`     | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_edge_stack`     | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_edge_job`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
-| `portainer_stack`          | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_stack`          | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_custom_template`| ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
-| `portainer_container_exec` | ![Planned](https://img.shields.io/badge/status-planned-blue)          |
+| `portainer_container_exec` | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 
 ---
 

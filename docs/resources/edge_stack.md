@@ -1,16 +1,10 @@
 # 🧩 **Resource Documentation: `portainer_custom_template`**
 
-```hcl
 # portainer_custom_template
-
 The `portainer_custom_template` resource allows you to manage Portainer Custom Templates.
 You can create templates using inline content (`file_content`), from a local file (`file_path`), or from a Git repository.
-```
-
----
 
 ## Example Usage
-
 ### Create Custom Template from `file_content`
 ```hcl
 resource "portainer_custom_template" "example_string" {
@@ -60,15 +54,12 @@ resource "portainer_custom_template" "example_git" {
 ---
 
 ## Lifecycle & Behavior
-
-Custom templates are created once and cannot be updated (they're immutable in Portainer). To change, destroy and recreate.
-
 - To delete a custom teplate:
 ```hcl
 terraform destroy
 ```
 
-- To update a templat, change any of the attributes and re-apply:
+- To update a template, change any of the attributes and re-apply:
 ```hcl
 terraform apply
 ```
