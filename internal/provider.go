@@ -46,6 +46,8 @@ func Provider() *schema.Provider {
 			"portainer_docker_image":    resourceDockerImage(),
 			"portainer_docker_volume":   resourceDockerVolume(),
 			"portainer_open_amt":        resourceOpenAMT(),
+			"portainer_settings":        resourceSettings(),
+			"portainer_ssl":             resourceSSLSettings(),
 		},
 		ConfigureContextFunc: configureProvider,
 	}

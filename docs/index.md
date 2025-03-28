@@ -69,7 +69,7 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `portainer_docker_image`   | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_docker_volume`  | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_open_amt`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
-| `portainer_settings`       | ![Done](https://img.shields.io/badge/status-planned-blue)             |
+| `portainer_settings`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 
 ---
 
