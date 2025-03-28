@@ -31,7 +31,7 @@
   </p>
 </p>
 
-# Portainer CE Terraform Provider
+# Portainer Terraform Provider
 
 A [Terraform](https://www.terraform.io) provider to manage [Portainer](https://www.portainer.io/) resources via its REST API using Terraform.
 
@@ -116,6 +116,11 @@ See our [examples](./docs/resources/) per resources in docs.
 | `portainer_stack`          | [📘 stack.md](docs/resources/stack.md)                     | [📂 example](examples/stack/)            | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_custom_template`| [📘 custom_template.md](docs/resources/custom_template.md) | [📂 example](examples/custom_template/)  | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_container_exec` | [📘 container_exec.md](docs/resources/container_exec.md)   | [📂 example](examples/container_exec/)   | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_docker_network` | [📘 docker_network.md](docs/resources/docker_network.md)   | [📂 example](examples/docker_network/)   | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_docker_image`   | [📘 docker_image.md](docs/resources/docker_image.md)       | [📂 example](examples/docker_image/)     | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_docker_volume`  | [📘 docker_volume.md](docs/resources/docker_volume.md)     | [📂 example](examples/docker_volume/)    | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_open_amt`       | [📘 open_amt.md](docs/resources/open_amt.md)               | [📂 example](examples/open_amt/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_settings`       | [📘 settings.md](docs/resources/settings.md)               | [📂 example](examples/settings/)         | ![Done](https://img.shields.io/badge/status-planned-blue)             |
 
 ---
 
@@ -173,3 +178,4 @@ Created by [Tomáš Grulich](https://github.com/grulicht) - to.grulich@gmail.com
 - [HashiCorp Terraform](https://www.hashicorp.com/products/terraform)
 - [Portainer](https://portainer.io)
 - [OpenTofu](https://opentofu.org/)
+- [Docker](https://www.docker.com/)

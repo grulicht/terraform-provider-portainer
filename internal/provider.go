@@ -42,6 +42,10 @@ func Provider() *schema.Provider {
 			"portainer_custom_template": resourceCustomTemplate(),
 			"portainer_stack":           resourcePortainerStack(),
             "portainer_container_exec":  resourceContainerExec(),
+			"portainer_docker_network":  resourceDockerNetwork(),
+			"portainer_docker_image":    resourceDockerImage(),
+			"portainer_docker_volume":   resourceDockerVolume(),
+			"portainer_open_amt":        resourceOpenAMT(),
 		},
 		ConfigureContextFunc: configureProvider,
 	}

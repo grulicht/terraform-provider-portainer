@@ -65,6 +65,11 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `portainer_stack`          | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_custom_template`| ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_container_exec` | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_docker_network` | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_docker_image`   | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_docker_volume`  | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_open_amt`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_settings`       | ![Done](https://img.shields.io/badge/status-planned-blue)             |
 
 ---
 
@@ -85,3 +90,4 @@ Created by [Tomáš Grulich](https://github.com/grulicht) - to.grulich@gmail.com
 - [HashiCorp Terraform](https://www.hashicorp.com/products/terraform)
 - [Portainer](https://portainer.io)
 - [OpenTofu](https://opentofu.org/)
+- [Docker](https://www.docker.com/)
