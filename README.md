@@ -121,7 +121,7 @@ See our [examples](./docs/resources/) per resources in docs.
 | `portainer_docker_volume`  | [📘 docker_volume.md](docs/resources/docker_volume.md)     | [📂 example](examples/docker_volume/)    | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_open_amt`       | [📘 open_amt.md](docs/resources/open_amt.md)               | [📂 example](examples/open_amt/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_settings`       | [📘 settings.md](docs/resources/settings.md)               | [📂 example](examples/settings/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
-| `portainer_ssl     `       | [📘 ssl.md](docs/resources/ssl.md)                         | [📂 example](examples/ssl/)              | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_ssl`       | [📘 ssl.md](docs/resources/ssl.md)                         | [📂 example](examples/ssl/)              | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 
 ---
 
