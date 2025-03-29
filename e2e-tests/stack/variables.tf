@@ -1,14 +1,14 @@
 variable "portainer_url" {
   description = "Default Portainer URL"
   type        = string
-  # default     = "http://localhost:9000"
+  default     = "http://localhost:9000"
 }
 
 variable "portainer_api_key" {
   description = "Default Portainer Admin API Key"
   type        = string
   sensitive   = true
-  # default     = "your-api-key-from-portainer"
+  default     = "ptr_xrP7XWqfZEOoaCJRu5c8qKaWuDtVc2Zb07Q5g22YpS8="
 }
 
 variable "stack_name" {
@@ -32,7 +32,7 @@ variable "stack_method" {
 variable "stack_endpoint_id" {
   description = "Portainer environment/endpoint ID"
   type        = number
-  # default     = 313
+  default     = 3
 }
 
 variable "stack_file_content" {
@@ -43,6 +43,7 @@ variable "stack_file_content" {
     services:
       web:
         image: nginx
+        name: nginx
   EOT
 }
 
