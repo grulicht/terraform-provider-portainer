@@ -141,7 +141,7 @@ make up
 ```
 Then open `http://localhost:9000` in your browser.
 
-### 🔐 Predefined Test Credentials for Login
+### 🔐 Predefined Test Credentials for Login (use also E2E tests)
 Thanks to the `portainer_data` directory included in this repository, a test user and token are preloaded when you launch the local Portainer instance:
 
 | **Field**    | **Value**                                                                  |

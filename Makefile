@@ -58,6 +58,9 @@ fmt:
 	@for project in $$(find examples -type d -mindepth 1 -maxdepth 1); do \
 		$(MAKE) _terraform TDIR=$$project TCMD="fmt" ; \
 	done
+	@for project in $$(find e2e-tests -type d -mindepth 1 -maxdepth 1); do \
+		$(MAKE) _terraform TDIR=$$project TCMD="fmt" ; \
+	done
 
 _terraform:
 	terraform -chdir=${TDIR} ${TCMD}
@@ -66,6 +69,11 @@ _terraform:
 .PHONY: docs
 docs:
 	@for dir in $$(find examples -type d -mindepth 1 -maxdepth 1); do \
+		if [ -f $$dir/main.tf ]; then \
+			terraform-docs -c .terraform-docs.yml $$dir; \
+		fi; \
+	done
+	@for dir in $$(find e2e-tests -type d -mindepth 1 -maxdepth 1); do \
 		if [ -f $$dir/main.tf ]; then \
 			terraform-docs -c .terraform-docs.yml $$dir; \
 		fi; \

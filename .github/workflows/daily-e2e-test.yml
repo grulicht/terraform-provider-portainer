@@ -21,13 +21,34 @@ jobs:
         with:
           terraform_version: 1.6.6
 
-      - name: 🧪 Run Terraform E2E tests in all test folders
+      - name: 🔍 Validate formatting (terraform fmt)
+        run: terraform fmt -check -recursive
+
+      - name: 🧪 Run Terraform E2E tests
         run: |
-          for dir in e2e-tests/*; do
-            if [ -d "$dir" ]; then
-              echo "▶️ Running Terraform in $dir"
-              cd "$dir"
+          APPLY_ONLY_DIRS=("backup" "auth" "settings" "open_amt" "ssl")
+          FULL_CYCLE_DIRS=("custom_template" "docker_image" "endpoint_group" "tag" "team" "user")
+
+          for dir in "${FULL_CYCLE_DIRS[@]}"; do
+            if [ -d "e2e-tests/$dir" ]; then
+              echo "▶️ Running full Terraform cycle in e2e-tests/$dir"
+              cd "e2e-tests/$dir"
               terraform init -input=false
+              terraform fmt -check
+              terraform validate
+              terraform apply -auto-approve
+              terraform destroy -auto-approve
+              cd -
+            fi
+          done
+
+          for dir in "${APPLY_ONLY_DIRS[@]}"; do
+            if [ -d "e2e-tests/$dir" ]; then
+              echo "▶️ Running apply-only Terraform in e2e-tests/$dir"
+              cd "e2e-tests/$dir"
+              terraform init -input=false
+              terraform fmt -check
+              terraform validate
               terraform apply -auto-approve
               cd -
             fi
