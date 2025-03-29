@@ -11,7 +11,7 @@
 
 | Name | Type |
 |------|------|
-| [portainer_stack.swarm_string](https://registry.terraform.io/providers/grulicht/portainer/latest/docs/resources/stack) | resource |
+| [portainer_stack.stanadlone_string](https://registry.terraform.io/providers/grulicht/portainer/latest/docs/resources/stack) | resource |
 
 ## Inputs
 

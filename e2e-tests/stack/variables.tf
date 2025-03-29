@@ -43,7 +43,6 @@ variable "stack_file_content" {
     services:
       web:
         image: nginx
-        name: nginx
   EOT
 }
 

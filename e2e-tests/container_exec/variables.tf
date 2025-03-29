@@ -20,7 +20,7 @@ variable "portainer_exec_endpoint_id" {
 variable "portainer_exec_service_name" {
   description = "Name of the container (standalone) or service (swarm)"
   type        = string
-  default     = "nginx"
+  default     = "nginx-standalone-string-web-1"
 }
 
 variable "portainer_exec_command" {
