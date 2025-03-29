@@ -1,0 +1,34 @@
+name: 🔁 Daily E2E Tests
+
+on:
+  schedule:
+    - cron: "0 7 * * *" # Every day at 07:00 UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Start Portainer via Docker Compose
+        run: make up
+
+      - name: ⬇️ Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: 🧪 Run Terraform E2E tests in all test folders
+        run: |
+          for dir in e2e-tests/*; do
+            if [ -d "$dir" ]; then
+              echo "▶️ Running Terraform in $dir"
+              cd "$dir"
+              terraform init -input=false
+              terraform apply -auto-approve
+              cd -
+            fi
+          done

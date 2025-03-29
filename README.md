@@ -32,13 +32,11 @@
 </p>
 
 # Portainer Terraform Provider
-
 A [Terraform](https://www.terraform.io) provider to manage [Portainer](https://www.portainer.io/) resources via its REST API using Terraform.
 
 It supports provisioning and configuration of Portainer users and will be extended to support other objects such as teams, stacks, endpoints, and access control.
 
 ## Requirements
-
 - Terraform v0.13+
 - Portainer 2.x with admin API key support enabled
 - Go 1.21+ (if building from source)
@@ -56,7 +54,6 @@ make build
 
 
 ## Example Provider Configuration
-
 ```hcl
 provider "portainer" {
   endpoint = "https://portainer.example.com"
@@ -77,8 +74,8 @@ provider "portainer" {
   api_key  = "your-api-key"
 }
 ```
-### Environment variables
 
+### Environment variables
 You can provide your configuration via the environment variables representing your minio credentials:
 
 ```hcl
@@ -87,18 +84,15 @@ $ export PORTAINER_API_KEY="your-api-key"
 ```
 
 ## Arguments Reference
-
 | Name       | Type   | Required | Description                                                                 |
 |------------|--------|----------|-----------------------------------------------------------------------------|
 | `endpoint` | string | ✅ yes   | The URL of the Portainer instance. `/api` will be appended automatically if missing. |
 | `api_key`  | string | ✅ yes   | API key used to authenticate requests.                                      |
 
 ## Usage
-
 See our [examples](./docs/resources/) per resources in docs.
 
 ## 🧩 Supported Resources
-
 | Resource                   | Documentation                                               | Example                                 | Status                                                                 |
 |----------------------------|-------------------------------------------------------------|-----------------------------------------|------------------------------------------------------------------------|
 | `portainer_user`           | [📘 user.md](docs/resources/user.md)                       | [📂 example](examples/user/)             | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
@@ -126,19 +120,36 @@ See our [examples](./docs/resources/) per resources in docs.
 ---
 
 ### 💡 Missing a resource?
-
 Is there a Portainer resource you'd like to see supported?
 
 👉 [Open an issue](https://github.com/grulicht/terraform-provider-portainer/issues/new?template=feature_request.md) and we’ll consider it for implementation — or even better, submit a [Pull Request](https://github.com/grulicht/terraform-provider-portainer/pulls) to contribute directly!
 
 📘 See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for guidelines.
 
-## Testing
+## 🔄 Workflows
+The project uses GitHub Actions to automate validation and testing of the provider.
+
+- Validate and lint documentation files (`README.md` and `docs/`)
+- Initialize, test and check the Portainer provider with **Terraform** and **OpenTofu**
+- Publish the new version of the Portainer Terraform provider to Terraform Registry
+- Run daily **E2E Terraform tests** against a live Portainer instance spun up via Docker Compose (`make up`) at **07:00 UTC**
+
+## 🧪 Testing
 To test the provider locally, start the Portainer Web UI using Docker Compose:
 ```sh
 make up
 ```
 Then open `http://localhost:9000` in your browser.
+
+### 🔐 Predefined Test Credentials for Login
+Thanks to the `portainer_data` directory included in this repository, a test user and token are preloaded when you launch the local Portainer instance:
+
+| **Field**    | **Value**                                                                  |
+|--------------|----------------------------------------------------------------------------|
+| Username     | `admin`                                                                    |
+| Password     | `password123456789`                                                        |
+| API Token    | `ptr_xrP7XWqfZEOoaCJRu5c8qKaWuDtVc2Zb07Q5g22YpS8=`                          |
+
 You can now apply your Terraform templates and observe changes live in the UI.
 
 ### Testing a new version of the Portainer provider
@@ -165,11 +176,9 @@ terraform {
 Now you're ready to test your provider against the local Portainer instance.
 
 ## Roadmap
-
 See the [open issues](https://github.com/grulicht/terraform-provider-portainer/issues) for a list of proposed features (and known issues). See [CONTRIBUTING](./.github/CONTRIBUTING.md) for more information.
 
 ## License
-
 This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](https://github.com/grulicht/terraform-provider-portainer/blob/main/LICENSE) for more information.
 
 ## Authors
