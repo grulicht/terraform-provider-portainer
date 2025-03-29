@@ -126,7 +126,14 @@ Is there a Portainer resource you'd like to see supported?
 
 📘 See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for guidelines.
 
-## 🔄 Workflows
+## ✅ Daily End-to-End Testing
+To ensure maximum reliability and functionality of this provider, **automated end-to-end tests are executed every day** via GitHub Actions.
+
+These tests run against a real Portainer instance (started using docker compose) and validate the majority of supported resources using real Terraform plans and applies.
+
+> 💡 This helps catch regressions early and ensures the provider remains fully operational and compatible with the Portainer API.
+
+### 🔄 Workflows
 The project uses GitHub Actions to automate validation and testing of the provider.
 
 - Validate and lint documentation files (`README.md` and `docs/`)
@@ -134,7 +141,7 @@ The project uses GitHub Actions to automate validation and testing of the provid
 - Publish the new version of the Portainer Terraform provider to Terraform Registry
 - Run daily **E2E Terraform tests** against a live Portainer instance spun up via Docker Compose (`make up`) at **07:00 UTC**
 
-## 🧪 Testing
+### 🧪 Localy Testing
 To test the provider locally, start the Portainer Web UI using Docker Compose:
 ```sh
 make up

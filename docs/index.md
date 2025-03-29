@@ -80,6 +80,13 @@ Is there a Portainer resource you'd like to see supported?
 
 📘 See [CONTRIBUTING.md](https://github.com/grulicht/terraform-provider-portainer/blob/main/.github/CONTRIBUTING.md) for guidelines.
 
+## ✅ Daily End-to-End Testing
+To ensure maximum reliability and functionality of this provider, **automated end-to-end tests are executed every day** via GitHub Actions.
+
+These tests run against a real Portainer instance (started using docker compose) and validate the majority of supported resources using real Terraform plans and applies.
+
+> 💡 This helps catch regressions early and ensures the provider remains fully operational and compatible with the Portainer API.
+
 ## License
 This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](https://github.com/grulicht/terraform-provider-portainer/blob/main/LICENSE) for more information.
 
