@@ -1,4 +1,4 @@
-name: 🔁 Daily E2E Tests
+name: Daily E2E Tests
 
 on:
   schedule:

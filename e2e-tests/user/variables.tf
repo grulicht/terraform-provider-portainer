@@ -21,7 +21,7 @@ variable "portainer_user_password" {
   description = "Portainer password used for resource provisioning"
   type        = string
   sensitive   = true
-  default     = "password"
+  default     = "your-user-password"
 }
 
 variable "portainer_user_role" {
