@@ -52,6 +52,7 @@ $ export PORTAINER_API_KEY="your-api-key"
 |----------------------------|------------------------------------------------------------------------|
 | `portainer_user`           | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_team`           | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_team_membrship` | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_environment`    | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_tag`            | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_endpoint_group` | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
@@ -70,6 +71,10 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `portainer_docker_volume`  | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_open_amt`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_settings`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_webhook`        | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_webhook_execute`| ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_licenses`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_cloud_credentials`| ![Done](https://img.shields.io/badge/status-done-brightgreen)       |
 
 ---
 

@@ -29,3 +29,15 @@ variable "portainer_user_role" {
   type        = number
   default     = 2 # 1 = admin, 2 = standard user
 }
+
+variable "portainer_team_name" {
+  description = "Portainer Team Name"
+  type        = string
+  default     = "your-team"
+}
+
+variable "team_membership_role" {
+  description = "Membership role in the team: 1 = leader, 2 = member"
+  type        = number
+  default     = 2
+}

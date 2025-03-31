@@ -48,6 +48,11 @@ func Provider() *schema.Provider {
 			"portainer_open_amt":        resourceOpenAMT(),
 			"portainer_settings":        resourceSettings(),
 			"portainer_ssl":             resourceSSLSettings(),
+			"portainer_team_membership": resourceTeamMembership(),
+			"portainer_webhook":         resourceWebhook(),
+			"portainer_webhook_execute": resourceWebhookExecute(),
+			"portainer_licenses":        resourceLicenses(),
+			"portainer_cloud_credentials": resourceCloudCredentials(),
 		},
 		ConfigureContextFunc: configureProvider,
 	}
