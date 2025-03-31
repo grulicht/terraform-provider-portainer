@@ -5,6 +5,20 @@
   },
   "forwardPorts": [9000],
   "postCreateCommand": "make up",
+  "features": {
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.21"
+    },
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "1.6.6"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest"
+    }
+  },
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -13,15 +27,6 @@
         "esbenp.prettier-vscode"
       ]
     }
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/go:1": {
-      "version": "1.21"
-    },
-    "ghcr.io/devcontainers/features/terraform:1": {
-      "version": "1.6.6"
-    },
-    "ghcr.io/devcontainers/features/docker-cli:1": {}
   },
   "remoteUser": "vscode"
 }
