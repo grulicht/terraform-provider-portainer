@@ -187,6 +187,14 @@ terraform {
 ```
 Now you're ready to test your provider against the local Portainer instance.
 
+### Dev Container Support
+This repository includes a `.devcontainer` setup for easy local development using [Visual Studio Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers).
+
+To start:
+1. Open this repo in VS Code
+2. Install the **Dev Containers** extension if prompted
+3. Click "Reopen in Container"
+
 ## Roadmap
 See the [open issues](https://github.com/grulicht/terraform-provider-portainer/issues) for a list of proposed features (and known issues). See [CONTRIBUTING](./.github/CONTRIBUTING.md) for more information.
 
