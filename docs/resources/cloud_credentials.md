@@ -7,7 +7,7 @@ The `portainer_cloud_credentials` resource allows you to provision cloud credent
 ```hcl
 resource "portainer_cloud_credentials" "example" {
   name     = "example-aws-creds"
-  provider = "aws"
+  cloud_provider = "aws"
 
   credentials = jsonencode({
     accessKeyId     = "your-access-key"

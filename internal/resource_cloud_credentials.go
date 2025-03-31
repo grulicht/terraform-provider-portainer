@@ -22,21 +22,24 @@ func resourceCloudCredentials() *schema.Resource {
 		Delete: resourceCloudCredentialsDelete,
 		Read:   resourceCloudCredentialsRead,
 		Schema: map[string]*schema.Schema{
-			"provider": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+			"cloud_provider": {
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Cloud provider name (e.g., aws, gcp, digitalocean)",
 			},
 			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-				ForceNew: true,
+				Type:        schema.TypeString,
+				Required:    true,
+				ForceNew:    true,
+				Description: "Human-readable name of the credentials",
 			},
 			"credentials": {
 				Type:     schema.TypeMap,
 				Required: true,
 				ForceNew: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
+				Description: "JSON-encoded credentials for the provider",
 			},
 		},
 	}
@@ -46,7 +49,7 @@ func resourceCloudCredentialsCreate(d *schema.ResourceData, meta interface{}) er
 	client := meta.(*APIClient)
 
 	payload := CloudCredentialPayload{
-		Provider:    d.Get("provider").(string),
+		Provider:    d.Get("cloud_provider").(string), // use renamed field here
 		Name:        d.Get("name").(string),
 		Credentials: mapStringInterface(d.Get("credentials").(map[string]interface{})),
 	}
