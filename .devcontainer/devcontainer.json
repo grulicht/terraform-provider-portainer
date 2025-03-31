@@ -1,27 +1,27 @@
 {
-    "name": "Portainer Dev Environment",
-    "build": {
-      "dockerfile": "Dockerfile"
+  "name": "Portainer Dev Environment",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "forwardPorts": [9000],
+  "postCreateCommand": "make up",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.Go",
+        "hashicorp.terraform",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "1.21"
     },
-    "forwardPorts": [9000],
-    "postCreateCommand": "make up",
-    "customizations": {
-      "vscode": {
-        "extensions": [
-          "golang.Go",
-          "hashicorp.terraform",
-          "esbenp.prettier-vscode"
-        ]
-      }
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "1.6.6"
     },
-    "features": {
-      "ghcr.io/devcontainers/features/go:1": {
-        "version": "1.21"
-      },
-      "ghcr.io/devcontainers/features/terraform:1": {
-        "version": "1.6.6"
-      }
-    },
-    "remoteUser": "vscode"
-  }
-  
+    "ghcr.io/devcontainers/features/docker-cli:1": {}
+  },
+  "remoteUser": "vscode"
+}
