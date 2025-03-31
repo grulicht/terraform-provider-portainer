@@ -24,7 +24,7 @@ variable "resource_id" {
 }
 
 variable "webhook_type" {
-  description = "Type of the webhook: 0 = Stack, 1 = Registry"
+  description = "Type of the webhook"
   type        = number
   default     = 1
 }
