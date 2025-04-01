@@ -18,6 +18,10 @@ func resourceUser() *schema.Resource {
 		Delete: resourceUserDelete,
 		Update: nil,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"username": {
 				Type:     schema.TypeString,

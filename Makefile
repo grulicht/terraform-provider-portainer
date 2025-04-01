@@ -18,6 +18,7 @@ help:
 	@echo "  o-fmt-check    Check formatting of OpenTofu files"
 	@echo "  o-fmt          Format OpenTofu files"
 	@echo "  up             Start Docker Compose services"
+	@echo "  launch         Open https://localhost:9000 in default browser"
 	@echo "  down           Stop Docker Compose services"
 	@echo ""
 	@echo "Environment:"
@@ -111,6 +112,22 @@ _opentofu:
 .PHONY: up
 up:
 	docker compose up -d
+
+.PHONY: launch
+launch:
+	@PORTAINER_HOST=$${PORTAINER_HOST:-'localhost:9000'} ; \
+	URL=$${URL:-http://$${PORTAINER_HOST}} ; \
+	echo "Opening $${URL} ..." ; \
+	OS=$$(uname | tr '[:upper:]' '[:lower:]') ; \
+	if [ "$$OS" = "linux" ]; then \
+		xdg-open "$${URL}" >/dev/null 2>&1 || echo "Could not open browser (xdg-open not found?)" ; \
+	elif [ "$$OS" = "darwin" ]; then \
+		open "$${URL}" ; \
+	elif echo "$$OS" | grep -q "mingw\\|msys\\|cygwin"; then \
+		start "$${URL}" ; \
+	else \
+		echo "Cannot open browser automatically on this OS: $$OS" ; \
+	fi
 
 .PHONY: down
 down:

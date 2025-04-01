@@ -29,6 +29,11 @@ func resourceTeamMembership() *schema.Resource {
 		Create: resourceTeamMembershipCreate,
 		Read:   resourceTeamMembershipRead,
 		Delete: resourceTeamMembershipDelete,
+
+		Importer: &schema.ResourceImporter{
+			State: resourceTeamMembershipImport,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"role": {
 				Type:        schema.TypeInt,
@@ -90,12 +95,51 @@ func resourceTeamMembershipCreate(d *schema.ResourceData, meta interface{}) erro
 	}
 
 	d.SetId(strconv.Itoa(result.ID))
-	return nil
+	return resourceTeamMembershipRead(d, meta)
 }
 
 func resourceTeamMembershipRead(d *schema.ResourceData, meta interface{}) error {
-	// Not supported via Portainer API, remove from state to avoid drift
+	client := meta.(*APIClient)
+
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/team_memberships", client.Endpoint), nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return fmt.Errorf("failed to fetch team memberships list: %s", resp.Status)
+	}
+
+	var memberships []TeamMembershipResponse
+	if err := json.NewDecoder(resp.Body).Decode(&memberships); err != nil {
+		return err
+	}
+
+	for _, m := range memberships {
+		if strconv.Itoa(m.ID) == d.Id() {
+			d.Set("role", m.Role)
+			d.Set("team_id", m.TeamID)
+			d.Set("user_id", m.UserID)
+			return nil
+		}
+	}
+
+	d.SetId("")
 	return nil
+}
+
+func resourceTeamMembershipImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {
+	if err := resourceTeamMembershipRead(d, meta); err != nil {
+		return nil, err
+	}
+	return []*schema.ResourceData{d}, nil
 }
 
 func resourceTeamMembershipDelete(d *schema.ResourceData, meta interface{}) error {

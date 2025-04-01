@@ -21,6 +21,10 @@ func resourceCustomTemplate() *schema.Resource {
 		Delete: resourceCustomTemplateDelete,
 		Update: nil,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"title":                 {Type: schema.TypeString, ForceNew: true, Required: true},
 			"description":           {Type: schema.TypeString, ForceNew: true, Required: true},
@@ -179,6 +183,38 @@ func getVariables(d *schema.ResourceData) []interface{} {
 }
 
 func resourceCustomTemplateRead(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+
+	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/custom_templates/%s", client.Endpoint, d.Id()), nil)
+	req.Header.Set("X-API-Key", client.APIKey)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == 404 {
+		d.SetId("")
+		return nil
+	} else if resp.StatusCode != 200 {
+		return fmt.Errorf("failed to read custom template")
+	}
+
+	var result map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return err
+	}
+
+	d.Set("title", result["Title"])
+	d.Set("description", result["Description"])
+	d.Set("note", result["Note"])
+	d.Set("platform", result["Platform"])
+	d.Set("type", result["Type"])
+	d.Set("logo", result["Logo"])
+	d.Set("edge_template", result["EdgeTemplate"])
+	d.Set("is_compose_format", result["IsComposeFormat"])
+
 	return nil
 }
 

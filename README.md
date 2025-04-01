@@ -93,34 +93,38 @@ $ export PORTAINER_API_KEY="your-api-key"
 See our [examples](./docs/resources/) per resources in docs.
 
 ## 🧩 Supported Resources
-| Resource                   | Documentation                                               | Example                                 | Status                                                                 | E2E Tests                                                            |
-|----------------------------|-------------------------------------------------------------|-----------------------------------------|------------------------------------------------------------------------|----------------------------------------------------------------------|
-| `portainer_user`           | [📘 user.md](docs/resources/user.md)                       | [📂 example](examples/user/)             | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_team`           | [📘 team.md](docs/resources/team.md)                       | [📂 example](examples/team/)             | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_team_membership`| [📘 team_membership.md](docs/resources/team_membership.md) | [📂 example](examples/team_membership/)  | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_environment`    | [📘 environment.md](docs/resources/environment.md)         | [📂 example](examples/environment/)      | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-false-grey)              |
-| `portainer_tag`            | [📘 tag.md](docs/resources/tag.md)                         | [📂 example](examples/tag/)              | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_endpoint_group` | [📘 endpoint_group.md](docs/resources/endpoint_group.md)   | [📂 example](examples/endpoint_group/)   | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_registry`       | [📘 registry.md](docs/resources/registry.md)               | [📂 example](examples/registry/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_backup`         | [📘 backup.md](docs/resources/backup.md)                   | [📂 example](examples/backup/)           | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_backup_s3`      | [📘 backup.md](docs/resources/backup_s3.md)                | [📂 example](examples/backup_s3/)        | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-false-grey)              |
-| `portainer_auth`           | [📘 auth.md](docs/resources/auth.md)                       | [📂 example](examples/auth/)             | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_edge_group`     | [📘 edge_group.md](docs/resources/edge_group.md)           | [📂 example](examples/edge_group/)       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-false-grey)              |
-| `portainer_edge_stack`     | [📘 edge_stack.md](docs/resources/edge_stack.md)           | [📂 example](examples/edge_stack/)       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-false-grey)              |
-| `portainer_edge_job`       | [📘 edge_job.md](docs/resources/edge_job.md)               | [📂 example](examples/edge_job/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-false-grey)              |
-| `portainer_stack`          | [📘 stack.md](docs/resources/stack.md)                     | [📂 example](examples/stack/)            | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_custom_template`| [📘 custom_template.md](docs/resources/custom_template.md) | [📂 example](examples/custom_template/)  | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_container_exec` | [📘 container_exec.md](docs/resources/container_exec.md)   | [📂 example](examples/container_exec/)   | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_docker_network` | [📘 docker_network.md](docs/resources/docker_network.md)   | [📂 example](examples/docker_network/)   | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_docker_image`   | [📘 docker_image.md](docs/resources/docker_image.md)       | [📂 example](examples/docker_image/)     | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_docker_volume`  | [📘 docker_volume.md](docs/resources/docker_volume.md)     | [📂 example](examples/docker_volume/)    | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_open_amt`       | [📘 open_amt.md](docs/resources/open_amt.md)               | [📂 example](examples/open_amt/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-false-grey)              |
-| `portainer_settings`       | [📘 settings.md](docs/resources/settings.md)               | [📂 example](examples/settings/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_ssl`            | [📘 ssl.md](docs/resources/ssl.md)                         | [📂 example](examples/ssl/)              | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_webhook`           | [📘 webhook.md](docs/resources/webhook.md)                         | [📂 example](examples/webhook/)                        | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-daily-blue)              |
-| `portainer_webhook_execute`   | [📘 webhook_execute.md](docs/resources/webhook_execute.md)         | [📂 example](examples/webhook_execute/)                | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-false-grey)              |
-| `portainer_licenses`          | [📘 licenses.md](docs/resources/licenses.md)                       | [📂 example](examples/licenses/)                       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-false-grey)              |
-| `portainer_cloud_credentials` | [📘 cloud_credentials.md](docs/resources/cloud_credentials.md)     | [📂 example](examples/cloud_credentials/)              | ![Done](https://img.shields.io/badge/status-done-brightgreen)         | ![Tested](https://img.shields.io/badge/running-false-grey)              |
+| Resource                     | Documentation                                               | Example                                 | Status                                                             | Terraform Import                                         | E2E Tests                                                 |
+|------------------------------|-------------------------------------------------------------|-----------------------------------------|--------------------------------------------------------------------|----------------------------------------------------------|------------------------------------------------------------|
+| `portainer_user`             | [user.md](docs/resources/user.md)                          | [example](examples/user/)               | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Yes](https://img.shields.io/badge/import-yes-brightgreen)      | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_team`             | [team.md](docs/resources/team.md)                          | [example](examples/team/)               | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Yes](https://img.shields.io/badge/import-yes-brightgreen)      | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_team_membership`  | [team_membership.md](docs/resources/team_membership.md)    | [example](examples/team_membership/)    | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Yes](https://img.shields.io/badge/import-yes-brightgreen)      | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_environment`      | [environment.md](docs/resources/environment.md)            | [example](examples/environment/)        | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_tag`              | [tag.md](docs/resources/tag.md)                            | [example](examples/tag/)                | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Yes](https://img.shields.io/badge/import-yes-brightgreen)      | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_endpoint_group`   | [endpoint_group.md](docs/resources/endpoint_group.md)      | [example](examples/endpoint_group/)     | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Yes](https://img.shields.io/badge/import-yes-brightgreen)      | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_registry`         | [registry.md](docs/resources/registry.md)                  | [example](examples/registry/)           | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_backup`           | [backup.md](docs/resources/backup.md)                      | [example](examples/backup/)             | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_backup_s3`        | [backup_s3.md](docs/resources/backup_s3.md)                | [example](examples/backup_s3/)          | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_auth`             | [auth.md](docs/resources/auth.md)                          | [example](examples/auth/)               | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_edge_group`       | [edge_group.md](docs/resources/edge_group.md)              | [example](examples/edge_group/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Yes](https://img.shields.io/badge/import-yes-brightgreen)      | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_edge_stack`       | [edge_stack.md](docs/resources/edge_stack.md)              | [example](examples/edge_stack/)         | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_edge_job`         | [edge_job.md](docs/resources/edge_job.md)                  | [example](examples/edge_job/)           | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_stack`            | [stack.md](docs/resources/stack.md)                        | [example](examples/stack/)              | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_custom_template`  | [custom_template.md](docs/resources/custom_template.md)    | [example](examples/custom_template/)    | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Yes](https://img.shields.io/badge/import-yes-brightgreen)      | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_container_exec`   | [container_exec.md](docs/resources/container_exec.md)      | [example](examples/container_exec/)     | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_docker_network`   | [docker_network.md](docs/resources/docker_network.md)      | [example](examples/docker_network/)     | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_docker_image`     | [docker_image.md](docs/resources/docker_image.md)          | [example](examples/docker_image/)       | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_docker_volume`    | [docker_volume.md](docs/resources/docker_volume.md)        | [example](examples/docker_volume/)      | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_open_amt`         | [open_amt.md](docs/resources/open_amt.md)                  | [example](examples/open_amt/)           | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_settings`         | [settings.md](docs/resources/settings.md)                  | [example](examples/settings/)           | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_endpoint_settings`| [endpoint_settings.md](docs/resources/endpoint_settings.md)| [example](examples/endpoint_settings/)  | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_portainer_endpoint_service_update`| [portainer_endpoint_service_update.md](docs/resources/portainer_endpoint_service_update.md)| [example](examples/portainer_endpoint_service_update/)  | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey) |
+| `portainer_endpoint_snapshot`| [endpoint_snapshot.md](docs/resources/endpoint_snapshot.md)| [example](examples/endpoint_snapshot/)  | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_endpoint_association`| [endpoint_association.md](docs/resources/endpoint_association.md)| [example](examples/endpoint_association/)  | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey) |
+| `portainer_ssl`              | [ssl.md](docs/resources/ssl.md)                            | [example](examples/ssl/)                | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_webhook`          | [webhook.md](docs/resources/webhook.md)                    | [example](examples/webhook/)            | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![Daily](https://img.shields.io/badge/running-daily-blue) |
+| `portainer_webhook_execute`  | [webhook_execute.md](docs/resources/webhook_execute.md)    | [example](examples/webhook_execute/)    | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_licenses`         | [licenses.md](docs/resources/licenses.md)                  | [example](examples/licenses/)           | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_cloud_credentials`| [cloud_credentials.md](docs/resources/cloud_credentials.md)| [example](examples/cloud_credentials/)  | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
 
 ---
 
@@ -130,6 +134,38 @@ Is there a Portainer resource you'd like to see supported?
 👉 [Open an issue](https://github.com/grulicht/terraform-provider-portainer/issues/new?template=feature_request.md) and we’ll consider it for implementation — or even better, submit a [Pull Request](https://github.com/grulicht/terraform-provider-portainer/pulls) to contribute directly!
 
 📘 See [CONTRIBUTING.md](./.github/CONTRIBUTING.md) for guidelines.
+
+## ♻️ Terraform Import Guide
+You can import existing Portainer-managed resources into Terraform using the `terraform import` command. This is useful for adopting GitOps practices or migrating manually created resources into code.
+
+### ✅ General Syntax
+```hcl
+terraform import <RESOURCE_TYPE>.<NAME> <ID>
+```
+- `<RESOURCE_TYPE>` – the Terraform resource type, e.g., portainer_tag
+- `<NAME>` – the local name you've chosen in your .tf file
+- `<ID>` – the Portainer object ID (usually numeric)
+
+### 🛠 Example: Import an existing tag
+Let's say you already have a tag with ID 3 in Portainer. First, define it in your configuration:
+```hcl
+resource "portainer_tag" "existing_tag" {
+  name = "production"
+}
+```
+Then run the import:
+```hcl
+terraform import portainer_tag.existing_tag 3
+```
+Terraform will fetch the current state of the resource and start managing it. You can now safely plan and apply updates from Terraform.
+
+### 📦 Auto-generate Terraform configuration
+After a successful import, you can automatically generate the resource definition from the Terraform state:
+```hcl
+./generate-tf.sh
+```
+This script reads the current Terraform state and generates a file named `generated.tf` with the proper configuration of the imported resources. You can copy or refactor the output into your main Terraform files.
+> ℹ️ Note: Only resources with import support listed as ✅ in the table above can be imported.
 
 ## ✅ Daily End-to-End Testing
 To ensure maximum reliability and functionality of this provider, **automated end-to-end tests are executed every day** via GitHub Actions.
@@ -186,14 +222,6 @@ terraform {
 }
 ```
 Now you're ready to test your provider against the local Portainer instance.
-
-### Dev Container Support
-This repository includes a `.devcontainer` setup for easy local development using [Visual Studio Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers).
-
-To start:
-1. Open this repo in VS Code
-2. Install the **Dev Containers** extension if prompted
-3. Click "Reopen in Container"
 
 ## Roadmap
 See the [open issues](https://github.com/grulicht/terraform-provider-portainer/issues) for a list of proposed features (and known issues). See [CONTRIBUTING](./.github/CONTRIBUTING.md) for more information.

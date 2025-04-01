@@ -18,6 +18,10 @@ func resourceTag() *schema.Resource {
 		Delete: resourceTagDelete,
 		Update: nil, // No update API – tag must be recreated
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		  },		  
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,

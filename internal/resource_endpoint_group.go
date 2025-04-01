@@ -18,6 +18,10 @@ func resourceEndpointGroup() *schema.Resource {
 		Delete: resourceEndpointGroupDelete,
 		Update: nil,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},		
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
@@ -83,6 +87,7 @@ func resourceEndpointGroupCreate(d *schema.ResourceData, meta interface{}) error
 
 	var result struct {
 		ID int `json:"Id"`
+		Description string `json:"Description"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return err

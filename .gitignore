@@ -25,3 +25,5 @@ dev.tfrc
 
 # testing providers
 backup.tar.gz
+generated.tf
+imported.json

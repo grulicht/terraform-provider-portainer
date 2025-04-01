@@ -53,6 +53,10 @@ func Provider() *schema.Provider {
 			"portainer_webhook_execute": resourceWebhookExecute(),
 			"portainer_licenses":        resourceLicenses(),
 			"portainer_cloud_credentials": resourceCloudCredentials(),
+			"portainer_endpoint_settings": resourceEndpointSettings(),
+			"portainer_endpoint_snapshot": resourceEndpointsSnapshot(),
+			"portainer_endpoint_association": resourceEndpointAssociation(),
+			"portainer_endpoint_service_update": resourceEndpointServiceUpdate(),
 		},
 		ConfigureContextFunc: configureProvider,
 	}

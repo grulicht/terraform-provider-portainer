@@ -71,6 +71,10 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `portainer_docker_volume`  | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_open_amt`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_settings`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_endpoint_settings`| ![Done](https://img.shields.io/badge/status-done-brightgreen)       |
+| `portainer_endpoint_service_update`| ![Done](https://img.shields.io/badge/status-done-brightgreen)       |
+| `portainer_endpoint_snapshot`| ![Done](https://img.shields.io/badge/status-done-brightgreen)      |
+| `portainer_endpoint_association`| ![Done](https://img.shields.io/badge/status-done-brightgreen)      |
 | `portainer_webhook`        | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_webhook_execute`| ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_licenses`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
@@ -91,6 +95,38 @@ To ensure maximum reliability and functionality of this provider, **automated en
 These tests run against a real Portainer instance (started using docker compose) and validate the majority of supported resources using real Terraform plans and applies.
 
 > 💡 This helps catch regressions early and ensures the provider remains fully operational and compatible with the Portainer API.
+
+## ♻️ Terraform Import Guide
+You can import existing Portainer-managed resources into Terraform using the `terraform import` command. This is useful for adopting GitOps practices or migrating manually created resources into code.
+
+### ✅ General Syntax
+```hcl
+terraform import <RESOURCE_TYPE>.<NAME> <ID>
+```
+- `<RESOURCE_TYPE>` – the Terraform resource type, e.g., portainer_tag
+- `<NAME>` – the local name you've chosen in your .tf file
+- `<ID>` – the Portainer object ID (usually numeric)
+
+### 🛠 Example: Import an existing tag
+Let's say you already have a tag with ID 3 in Portainer. First, define it in your configuration:
+```hcl
+resource "portainer_tag" "existing_tag" {
+  name = "production"
+}
+```
+Then run the import:
+```hcl
+terraform import portainer_tag.existing_tag 3
+```
+Terraform will fetch the current state of the resource and start managing it. You can now safely plan and apply updates from Terraform.
+
+### 📦 Auto-generate Terraform configuration
+After a successful import, you can automatically generate the resource definition from the Terraform state:
+```hcl
+./generate-tf.sh
+```
+This script reads the current Terraform state and generates a file named `generated.tf` with the proper configuration of the imported resources. You can copy or refactor the output into your main Terraform files.
+> ℹ️ Note: Only resources with import support listed as ✅ in the table above can be imported.
 
 ## License
 This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](https://github.com/grulicht/terraform-provider-portainer/blob/main/LICENSE) for more information.

@@ -17,6 +17,10 @@ func resourceEdgeGroup() *schema.Resource {
 		Read:   resourceEdgeGroupRead,
 		Delete: resourceEdgeGroupDelete,
 
+		Importer: &schema.ResourceImporter{
+			State: schema.ImportStatePassthrough,
+		},
+
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
