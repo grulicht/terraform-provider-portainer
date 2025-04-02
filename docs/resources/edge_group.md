@@ -29,7 +29,7 @@ resource "portainer_edge_group" "dynamic_group" {
 }
 ```
 ## Lifecycle & Behavior
-Edge groups are recreated if any of the attributes change (e.g., name, tag_ids, endpoints, etc.).
+Edge groups are updated if any of the attributes change (e.g., name, tag_ids, endpoints, etc.).
 - To delete an edge group created via Terraform, simply run:
 ```hcl
 terraform destroy

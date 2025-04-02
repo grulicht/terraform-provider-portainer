@@ -16,7 +16,7 @@ func resourceEndpointGroup() *schema.Resource {
 		Create: resourceEndpointGroupCreate,
 		Read:   resourceEndpointGroupRead,
 		Delete: resourceEndpointGroupDelete,
-		Update: nil,
+		Update: resourceEndpointGroupUpdate,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -26,17 +26,14 @@ func resourceEndpointGroup() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"description": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 			},
 			"tag_ids": {
 				Type:     schema.TypeList,
 				Optional: true,
-				ForceNew: true,
 				Elem:     &schema.Schema{Type: schema.TypeInt},
 			},
 		},
@@ -86,7 +83,7 @@ func resourceEndpointGroupCreate(d *schema.ResourceData, meta interface{}) error
 	}
 
 	var result struct {
-		ID int `json:"Id"`
+		ID          int    `json:"Id"`
 		Description string `json:"Description"`
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
@@ -131,6 +128,51 @@ func resourceEndpointGroupRead(d *schema.ResourceData, meta interface{}) error {
 	d.Set("tag_ids", group.TagIDs)
 
 	return nil
+}
+
+func resourceEndpointGroupUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+
+	payload := map[string]interface{}{
+		"name": d.Get("name").(string),
+	}
+
+	if v, ok := d.GetOk("description"); ok {
+		payload["description"] = v.(string)
+	}
+
+	if v, ok := d.GetOk("tag_ids"); ok {
+		tagIDs := []int{}
+		for _, id := range v.([]interface{}) {
+			tagIDs = append(tagIDs, id.(int))
+		}
+		payload["tagIDs"] = tagIDs
+	}
+
+	jsonBody, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/endpoint_groups/%s", client.Endpoint, d.Id()), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update endpoint group: %s", string(data))
+	}
+
+	return resourceEndpointGroupRead(d, meta)
 }
 
 func resourceEndpointGroupDelete(d *schema.ResourceData, meta interface{}) error {

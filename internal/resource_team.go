@@ -16,7 +16,7 @@ func resourceTeam() *schema.Resource {
 		Create: resourceTeamCreate,
 		Read:   resourceTeamRead,
 		Delete: resourceTeamDelete,
-		Update: nil,
+		Update: resourceTeamUpdate,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -26,7 +26,6 @@ func resourceTeam() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 		},
 	}
@@ -101,6 +100,35 @@ func resourceTeamRead(d *schema.ResourceData, meta interface{}) error {
 
 	d.Set("name", result.Name)
 	return nil
+}
+
+func resourceTeamUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+
+	body := map[string]interface{}{
+		"name": d.Get("name").(string),
+	}
+
+	jsonBody, _ := json.Marshal(body)
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/teams/%s", client.Endpoint, d.Id()), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 && resp.StatusCode != 204 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update team: %s", string(data))
+	}
+
+	return resourceTeamRead(d, meta)
 }
 
 func resourceTeamDelete(d *schema.ResourceData, meta interface{}) error {

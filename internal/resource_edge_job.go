@@ -19,41 +19,36 @@ func resourceEdgeJob() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceEdgeJobCreate,
 		Read:   resourceEdgeJobRead,
+		Update: resourceEdgeJobUpdate,
 		Delete: resourceEdgeJobDelete,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"cron_expression": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"edge_groups": {
 				Type:     schema.TypeList,
 				Elem:     &schema.Schema{Type: schema.TypeInt},
 				Required: true,
-				ForceNew: true,
 			},
 			"endpoints": {
 				Type:     schema.TypeList,
 				Elem:     &schema.Schema{Type: schema.TypeInt},
 				Required: true,
-				ForceNew: true,
 			},
 			"recurring": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
-				ForceNew: true,
 			},
 			"file_content": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 				ExactlyOneOf: []string{"file_content", "file_path"},
 			},
 			"file_path": {
@@ -81,12 +76,12 @@ func resourceEdgeJobCreate(d *schema.ResourceData, meta interface{}) error {
 	if v, ok := d.GetOk("file_content"); ok {
 		// string-based submission
 		body := map[string]interface{}{
-			"name":            name,
-			"cronExpression":  cron,
-			"edgeGroups":      edgeGroups,
-			"endpoints":       endpoints,
-			"recurring":       recurring,
-			"fileContent":     v.(string),
+			"name":           name,
+			"cronExpression": cron,
+			"edgeGroups":     edgeGroups,
+			"endpoints":      endpoints,
+			"recurring":      recurring,
+			"fileContent":    v.(string),
 		}
 
 		jsonBody, _ := json.Marshal(body)
@@ -176,6 +171,44 @@ func resourceEdgeJobCreate(d *schema.ResourceData, meta interface{}) error {
 
 func resourceEdgeJobRead(d *schema.ResourceData, meta interface{}) error {
 	// Optional: implement if needed
+	return nil
+}
+
+func resourceEdgeJobUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+
+	payload := map[string]interface{}{
+		"name":           d.Get("name").(string),
+		"cronExpression": d.Get("cron_expression").(string),
+		"edgeGroups":     d.Get("edge_groups").([]interface{}),
+		"endpoints":      d.Get("endpoints").([]interface{}),
+		"recurring":      d.Get("recurring").(bool),
+	}
+
+	if v, ok := d.GetOk("file_content"); ok {
+		payload["fileContent"] = v.(string)
+	}
+
+	jsonBody, _ := json.Marshal(payload)
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/edge_jobs/%s", client.Endpoint, d.Id()), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update edge job: %s", string(data))
+	}
+
 	return nil
 }
 

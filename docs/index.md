@@ -4,13 +4,13 @@ A [Terraform](https://www.terraform.io) provider to manage [Portainer](https://w
 
 It supports provisioning and configuration of Portainer users and will be extended to support other objects such as teams, compose/stacks, endpoints, and access control.
 
-## Provider Support
+## 🏷️ Provider Support
 | Provider       | Provider Support Status              |
 |----------------|--------------------------------------|
 | [Terraform](https://registry.terraform.io/providers/grulicht/portainer/latest)      | ![Done](https://img.shields.io/badge/status-done-brightgreen)           |
 | [OpenTofu](https://search.opentofu.org/provider/grulicht/portainer/latest)       | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 
-## Example Provider Configuration
+## ⚙️ Example Provider Configuration
 ```hcl
 provider "portainer" {
   endpoint = "..."
@@ -18,12 +18,12 @@ provider "portainer" {
 }
 ```
 
-## Authentication
+## 🔐 Authentication
 - Static API key
 
 Static credentials can be provided by adding the `api_key` variables in-line in the Portainer provider block:
 
-> 🔐 **Authentication:** This provider supports only **API keys** via the `X-API-Key` header. JWT tokens curentlly are not supported in this provider.
+> **Authentication:** This provider supports only **API keys** via the `X-API-Key` header. JWT tokens curentlly are not supported in this provider.
 
 Usage:
 
@@ -40,7 +40,7 @@ $ export PORTAINER_ENDPOINT="http://portainer.example.com"
 $ export PORTAINER_API_KEY="your-api-key"
 ```
 
-## Arguments Reference
+### Arguments Reference
 | Name       | Type   | Required | Description                                                                 |
 |------------|--------|----------|-----------------------------------------------------------------------------|
 | `endpoint` | string | ✅ yes   | The URL of the Portainer instance. `/api` will be appended automatically if missing. |
@@ -128,13 +128,13 @@ After a successful import, you can automatically generate the resource definitio
 This script reads the current Terraform state and generates a file named `generated.tf` with the proper configuration of the imported resources. You can copy or refactor the output into your main Terraform files.
 > ℹ️ Note: Only resources with import support listed as ✅ in the table above can be imported.
 
-## License
+## 📜 License
 This module is 100% Open Source and all versions of this provider starting from v2.0.0 are distributed under the AGPL-3.0 License. See [LICENSE](https://github.com/grulicht/terraform-provider-portainer/blob/main/LICENSE) for more information.
 
-## Authors
+## 👤 Authors
 Created by [Tomáš Grulich](https://github.com/grulicht) - to.grulich@gmail.com
 
-## Acknowledgements
+## 🌐 Acknowledgements
 - [HashiCorp Terraform](https://www.hashicorp.com/products/terraform)
 - [Portainer](https://portainer.io)
 - [OpenTofu](https://opentofu.org/)

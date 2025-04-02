@@ -16,22 +16,20 @@ func resourceRegistry() *schema.Resource {
 		Create: resourceRegistryCreate,
 		Read:   resourceRegistryRead,
 		Delete: resourceRegistryDelete,
+		Update: resourceRegistryUpdate,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"url": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"base_url": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 			},
 			"type": {
 				Type:     schema.TypeInt,
@@ -42,28 +40,23 @@ func resourceRegistry() *schema.Resource {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
-				ForceNew: true,
 			},
 			"username": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 			},
 			"password": {
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,
-				ForceNew:  true,
 			},
 			"instance_url": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 			},
 			"aws_region": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 			},
 		},
 	}
@@ -179,6 +172,53 @@ func resourceRegistryCreate(d *schema.ResourceData, meta interface{}) error {
 
 func resourceRegistryRead(d *schema.ResourceData, meta interface{}) error {
 	// Not implemented (optional for now)
+	return nil
+}
+
+func resourceRegistryUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+	id := d.Id()
+
+	body := map[string]interface{}{
+		"name":          d.Get("name").(string),
+		"url":           d.Get("url").(string),
+		"baseURL":       d.Get("base_url").(string),
+		"authentication": d.Get("authentication").(bool),
+		"username":      d.Get("username").(string),
+		"password":      d.Get("password").(string),
+	}
+
+	if d.Get("type").(int) == 4 {
+		body["gitlab"] = map[string]interface{}{
+			"InstanceURL": d.Get("instance_url").(string),
+		}
+	}
+
+	if d.Get("type").(int) == 7 {
+		body["ecr"] = map[string]interface{}{
+			"Region": d.Get("aws_region").(string),
+		}
+	}
+
+	jsonBody, _ := json.Marshal(body)
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/registries/%s", client.Endpoint, id), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update registry: %s", string(data))
+	}
+
 	return nil
 }
 

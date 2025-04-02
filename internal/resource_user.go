@@ -16,7 +16,7 @@ func resourceUser() *schema.Resource {
 		Create: resourceUserCreate,
 		Read:   resourceUserRead,
 		Delete: resourceUserDelete,
-		Update: nil,
+		Update: resourceUserUpdate,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
@@ -26,19 +26,16 @@ func resourceUser() *schema.Resource {
 			"username": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"password": {
 				Type:      schema.TypeString,
 				Optional:  true,
 				Sensitive: true,
-				ForceNew:  true,
 			},
 			"role": {
 				Type:     schema.TypeInt,
 				Optional: true,
-				Default:  2, // 1 = admin, 2 = standard user
-				ForceNew: true,
+				Default:  2,
 			},
 			"ldap_user": {
 				Type:     schema.TypeBool,
@@ -50,7 +47,21 @@ func resourceUser() *schema.Resource {
 				Type:        schema.TypeInt,
 				Optional:    true,
 				Description: "Optional Portainer team ID. Only applicable for standard users (role = 2).",
-				ForceNew:    true,
+			},
+			"generate_api_key": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+			"api_key_description": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Default:  "terraform-generated-api-key",
+			},
+			"api_key_raw": {
+				Type:     schema.TypeString,
+				Computed: true,
+				Sensitive: true,
 			},
 		},
 	}
@@ -107,10 +118,8 @@ func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
 	if result.ID == 0 {
 		return resourceUserReadByUsername(d, meta)
 	}
-
 	d.SetId(strconv.Itoa(result.ID))
 
-	// Optional: assign to team
 	teamID, ok := d.GetOk("team_id")
 	if ok {
 		if role != 2 {
@@ -120,7 +129,7 @@ func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
 		teamMembership := map[string]interface{}{
 			"UserID": result.ID,
 			"TeamID": teamID.(int),
-			"Role":   2, // 2 = team member
+			"Role":   2,
 		}
 		jsonMembership, _ := json.Marshal(teamMembership)
 
@@ -141,6 +150,42 @@ func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
 			data, _ := io.ReadAll(resp.Body)
 			return fmt.Errorf("failed to assign user to team: %s", string(data))
 		}
+	}
+
+	if d.Get("generate_api_key").(bool) {
+		description := d.Get("api_key_description").(string)
+		if password == "" {
+			return fmt.Errorf("password must be set to generate API key")
+		}
+		apiPayload := map[string]interface{}{
+			"description": description,
+			"password":    password,
+		}
+		jsonTokenBody, _ := json.Marshal(apiPayload)
+		req, err := http.NewRequest("POST", fmt.Sprintf("%s/users/%d/tokens", client.Endpoint, result.ID), bytes.NewBuffer(jsonTokenBody))
+		if err != nil {
+			return err
+		}
+		req.Header.Set("X-API-Key", client.APIKey)
+		req.Header.Set("Content-Type", "application/json")
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != 200 {
+			data, _ := io.ReadAll(resp.Body)
+			return fmt.Errorf("failed to generate API key: %s", string(data))
+		}
+
+		var tokenResp struct {
+			RawAPIKey string `json:"rawAPIKey"`
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&tokenResp); err != nil {
+			return err
+		}
+		d.Set("api_key_raw", tokenResp.RawAPIKey)
 	}
 
 	return resourceUserRead(d, meta)
@@ -215,10 +260,77 @@ func resourceUserReadByUsername(d *schema.ResourceData, meta interface{}) error 
 	return fmt.Errorf("user created but not found in user list")
 }
 
+func resourceUserUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+	id := d.Id()
+
+	if d.HasChange("password") {
+		oldPw, newPw := d.GetChange("password")
+		payload := map[string]string{
+			"password":    oldPw.(string),
+			"newPassword": newPw.(string),
+		}
+		jsonBody, _ := json.Marshal(payload)
+		req, err := http.NewRequest("PUT", fmt.Sprintf("%s/users/%s/passwd", client.Endpoint, id), bytes.NewBuffer(jsonBody))
+		if err != nil {
+			return err
+		}
+		req.Header.Set("X-API-Key", client.APIKey)
+		req.Header.Set("Content-Type", "application/json")
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != 204 {
+			data, _ := io.ReadAll(resp.Body)
+			return fmt.Errorf("failed to update password: %s", string(data))
+		}
+	}
+
+	body := map[string]interface{}{
+		"username": d.Get("username").(string),
+		"role":     d.Get("role").(int),
+		"useCache": true,
+	}
+	jsonBody, _ := json.Marshal(body)
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/users/%s", client.Endpoint, id), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update user: %s", data)
+	}
+
+	return resourceUserRead(d, meta)
+}
+
 func resourceUserDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
+	id := d.Id()
 
-	req, _ := http.NewRequest("DELETE", fmt.Sprintf("%s/users/%s", client.Endpoint, d.Id()), nil)
+	if keyID, ok := d.Get("api_key_id").(int); ok && keyID > 0 {
+		req, _ := http.NewRequest("DELETE", fmt.Sprintf("%s/users/%s/tokens/%d", client.Endpoint, id, keyID), nil)
+		req.Header.Set("X-API-Key", client.APIKey)
+		resp, err := http.DefaultClient.Do(req)
+		if err == nil {
+			defer resp.Body.Close()
+		}
+	}
+
+	req, _ := http.NewRequest("DELETE", fmt.Sprintf("%s/users/%s", client.Endpoint, id), nil)
 	req.Header.Set("X-API-Key", client.APIKey)
 
 	resp, err := http.DefaultClient.Do(req)

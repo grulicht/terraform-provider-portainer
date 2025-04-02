@@ -31,7 +31,7 @@ resource "portainer_environment" "your-host" {
 ```
 ## Lifecycle & Behavior
 
-Environments are recreated if any of the attributes change (e.g., name, address, type, group_id, tag_ids).
+Environments are updated if any of the attributes change (e.g., name, address, type, group_id, tag_ids).
 
 - To delete an environment created via Terraform, simply run:
 ```hcl

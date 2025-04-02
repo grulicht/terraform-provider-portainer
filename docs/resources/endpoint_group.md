@@ -29,7 +29,7 @@ resource "portainer_endpoint_group" "your-group" {
 
 ## Lifecycle & Behavior
 
-Endpoint groups are recreated if any attributes change (e.g. name, description, tag_ids).
+Endpoint groups are updated if any attributes change (e.g. name, description, tag_ids).
 
 - To delete a group created via Terraform, simply run:
 ```hcl

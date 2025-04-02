@@ -28,7 +28,7 @@ resource "portainer_user" "your-user" {
 ```
 ## Lifecycle & Behavior
 
-Users are recreated if any of the attributes change (e.g. name).
+Users are updated if any of the attributes change (e.g. name).
 
 - To delete a team created via Terraform, simply run:
 ```hcl

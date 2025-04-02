@@ -19,30 +19,30 @@ func resourceCustomTemplate() *schema.Resource {
 		Create: resourceCustomTemplateCreate,
 		Read:   resourceCustomTemplateRead,
 		Delete: resourceCustomTemplateDelete,
-		Update: nil,
+		Update: resourceCustomTemplateUpdate,
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
 		},
 
 		Schema: map[string]*schema.Schema{
-			"title":                 {Type: schema.TypeString, ForceNew: true, Required: true},
-			"description":           {Type: schema.TypeString, ForceNew: true, Required: true},
-			"note":                  {Type: schema.TypeString, ForceNew: true, Required: true},
-			"platform":              {Type: schema.TypeInt, ForceNew: true, Required: true},
-			"type":                  {Type: schema.TypeInt, ForceNew: true, Required: true},
-			"logo":                  {Type: schema.TypeString, ForceNew: true, Optional: true},
-			"edge_template":         {Type: schema.TypeBool, ForceNew: true, Optional: true, Default: false},
-			"is_compose_format":     {Type: schema.TypeBool, ForceNew: true, Optional: true, Default: false},
-			"variables":             {Type: schema.TypeList, ForceNew: true, Optional: true, Elem: &schema.Schema{Type: schema.TypeMap}},
-			"file_content":          {Type: schema.TypeString, ForceNew: true, Optional: true},
-			"file_path":             {Type: schema.TypeString, ForceNew: true, Optional: true},
-			"repository_url":        {Type: schema.TypeString, ForceNew: true, Optional: true},
-			"repository_username":   {Type: schema.TypeString, ForceNew: true, Optional: true},
-			"repository_password":   {Type: schema.TypeString, ForceNew: true, Optional: true, Sensitive: true},
-			"repository_reference":  {Type: schema.TypeString, ForceNew: true, Optional: true, Default: "refs/heads/main"},
-			"compose_file_path":     {Type: schema.TypeString, ForceNew: true, Optional: true, Default: "docker-compose.yml"},
-			"tlsskip_verify":        {Type: schema.TypeBool, ForceNew: true, Optional: true, Default: false},
+			"title":                 {Type: schema.TypeString, Required: true},
+			"description":           {Type: schema.TypeString, Required: true},
+			"note":                  {Type: schema.TypeString, Required: true},
+			"platform":              {Type: schema.TypeInt, Required: true},
+			"type":                  {Type: schema.TypeInt, Required: true},
+			"logo":                  {Type: schema.TypeString, Optional: true},
+			"edge_template":         {Type: schema.TypeBool, Optional: true, Default: false},
+			"is_compose_format":     {Type: schema.TypeBool, Optional: true, Default: false},
+			"variables":             {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeMap}},
+			"file_content":          {Type: schema.TypeString, Optional: true},
+			"file_path":             {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"repository_url":        {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"repository_username":   {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"repository_password":   {Type: schema.TypeString, Optional: true, Sensitive: true, ForceNew: true},
+			"repository_reference":  {Type: schema.TypeString, Optional: true, Default: "refs/heads/main", ForceNew: true},
+			"compose_file_path":     {Type: schema.TypeString, Optional: true, Default: "docker-compose.yml", ForceNew: true},
+			"tlsskip_verify":        {Type: schema.TypeBool, Optional: true, Default: false, ForceNew: true},
 		},
 	}
 }
@@ -216,6 +216,81 @@ func resourceCustomTemplateRead(d *schema.ResourceData, meta interface{}) error 
 	d.Set("is_compose_format", result["IsComposeFormat"])
 
 	return nil
+}
+
+func resourceCustomTemplateUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+
+	payload := map[string]interface{}{
+		"title":                   d.Get("title").(string),
+		"description":             d.Get("description").(string),
+		"note":                    d.Get("note").(string),
+		"platform":                d.Get("platform").(int),
+		"type":                    d.Get("type").(int),
+		"logo":                    d.Get("logo").(string),
+		"edgeTemplate":            d.Get("edge_template").(bool),
+		"isComposeFormat":         d.Get("is_compose_format").(bool),
+		"composeFilePathInRepository": d.Get("compose_file_path").(string),
+		"tlsskipVerify":           d.Get("tlsskip_verify").(bool),
+		"variables":               getVariables(d),
+	}
+
+	isGitBased := false
+
+	if v, ok := d.GetOk("file_content"); ok {
+		payload["fileContent"] = v.(string)
+	}
+	if v, ok := d.GetOk("repository_url"); ok {
+		isGitBased = true
+		payload["repositoryURL"] = v.(string)
+		payload["repositoryUsername"] = d.Get("repository_username").(string)
+		payload["repositoryPassword"] = d.Get("repository_password").(string)
+		payload["repositoryReferenceName"] = d.Get("repository_reference").(string)
+		payload["repositoryAuthentication"] = true
+	}
+
+	jsonBody, _ := json.Marshal(payload)
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/custom_templates/%s", client.Endpoint, d.Id()), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update custom template: %s", string(data))
+	}
+
+	if isGitBased {
+		// Also trigger git_fetch after successful update
+		u := fmt.Sprintf("%s/custom_templates/%s/git_fetch", client.Endpoint, d.Id())
+		req, err := http.NewRequest("PUT", u, nil)
+		if err != nil {
+			return err
+		}
+		req.Header.Set("X-API-Key", client.APIKey)
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != 200 {
+			data, _ := io.ReadAll(resp.Body)
+			return fmt.Errorf("failed to git_fetch template: %s", string(data))
+		}
+	}
+
+	return resourceCustomTemplateRead(d, meta)
 }
 
 func resourceCustomTemplateDelete(d *schema.ResourceData, meta interface{}) error {

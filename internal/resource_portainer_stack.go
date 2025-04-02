@@ -19,52 +19,48 @@ func resourcePortainerStack() *schema.Resource {
 		Create: resourcePortainerStackCreate,
 		Read:   resourcePortainerStackRead,
 		Delete: resourcePortainerStackDelete,
-		Update: nil,
-
+		Update: resourcePortainerStackUpdate,
 		Schema: map[string]*schema.Schema{
 			"deployment_type": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "Deployment mode: 'standalone', 'swarm', or 'kubernetes'",
-				ForceNew: true,
+				ForceNew:    true,
 			},
 			"method": {
 				Type:        schema.TypeString,
 				Required:    true,
 				Description: "Creation method: 'string', 'file', 'repository', or 'url'",
-				ForceNew: true,
+				ForceNew:    true,
 			},
-			"name":                   {Type: schema.TypeString, Required: true, ForceNew: true},
-			"endpoint_id":           {Type: schema.TypeInt, Required: true, ForceNew: true},
-			"swarm_id":              {Type: schema.TypeString, Optional: true, ForceNew: true, Computed: true},
-			"namespace":             {Type: schema.TypeString, Optional: true, ForceNew: true},
-			"stack_file_content":    {Type: schema.TypeString, Optional: true, ForceNew: true},
-			"stack_file_path":       {Type: schema.TypeString, Optional: true, ForceNew: true},
-			"repository_url":        {Type: schema.TypeString, Optional: true, ForceNew: true},
-			"repository_username":   {Type: schema.TypeString, Optional: true, ForceNew: true},
-			"repository_password":   {Type: schema.TypeString, Optional: true, ForceNew: true, Sensitive: true},
+			"name":                 {Type: schema.TypeString, Required: true, ForceNew: true},
+			"endpoint_id":         {Type: schema.TypeInt, Required: true, ForceNew: true},
+			"swarm_id":            {Type: schema.TypeString, Optional: true, ForceNew: true, Computed: true},
+			"namespace":           {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"stack_file_content":  {Type: schema.TypeString, Optional: true},
+			"stack_file_path":     {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"repository_url":      {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"repository_username": {Type: schema.TypeString, Optional: true},
+			"repository_password": {Type: schema.TypeString, Optional: true, Sensitive: true},
 			"repository_reference_name": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "refs/heads/main",
-				ForceNew: true,
 			},
 			"file_path_in_repository": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Default:  "docker-compose.yml",
-				ForceNew: true,
 			},
-			"manifest_url":       {Type: schema.TypeString, Optional: true, ForceNew: true,},
-			"compose_format":     {Type: schema.TypeBool, Optional: true, Default: false, ForceNew: true},
+			"manifest_url":   {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"compose_format": {Type: schema.TypeBool, Optional: true, Default: false, ForceNew: true},
 			"env": {
 				Type:     schema.TypeList,
 				Optional: true,
-				ForceNew: true,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"name":  {Type: schema.TypeString, Required: true, ForceNew: true},
-						"value": {Type: schema.TypeString, Required: true, ForceNew: true},
+						"name":  {Type: schema.TypeString, Required: true},
+						"value": {Type: schema.TypeString, Required: true},
 					},
 				},
 			},
@@ -171,6 +167,85 @@ func resourcePortainerStackDelete(d *schema.ResourceData, meta interface{}) erro
 
 	data, _ := io.ReadAll(resp.Body)
 	return fmt.Errorf("failed to delete stack: %s", string(data))
+}
+
+func resourcePortainerStackUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+	stackID := d.Id()
+	endpointID := d.Get("endpoint_id").(int)
+	method := d.Get("method").(string)
+
+	if method == "repository" {
+		payload := map[string]interface{}{
+			"env":                     flattenEnvList(d.Get("env").([]interface{})),
+			"prune":                   true,
+			"pullImage":               false,
+			"repositoryAuthentication": true,
+			"repositoryUsername":      d.Get("repository_username").(string),
+			"repositoryPassword":      d.Get("repository_password").(string),
+			"repositoryReferenceName": d.Get("repository_reference_name").(string),
+			"stackName":               d.Get("name").(string),
+		}
+
+		jsonBody, err := json.Marshal(payload)
+		if err != nil {
+			return err
+		}
+
+		u := fmt.Sprintf("%s/stacks/%s/git/redeploy?endpointId=%d", client.Endpoint, stackID, endpointID)
+		req, err := http.NewRequest("PUT", u, bytes.NewBuffer(jsonBody))
+		if err != nil {
+			return err
+		}
+		req.Header.Set("X-API-Key", client.APIKey)
+		req.Header.Set("Content-Type", "application/json")
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode != 200 {
+			data, _ := io.ReadAll(resp.Body)
+			return fmt.Errorf("failed to update git stack: %s", string(data))
+		}
+		return nil
+	}
+
+	// fallback to default update (string based)
+	payload := map[string]interface{}{
+		"env":               flattenEnvList(d.Get("env").([]interface{})),
+		"stackFileContent": d.Get("stack_file_content").(string),
+		"prune":             true,
+		"pullImage":         false,
+	}
+
+	jsonBody, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	u := fmt.Sprintf("%s/stacks/%s?endpointId=%d", client.Endpoint, stackID, endpointID)
+	req, err := http.NewRequest("PUT", u, bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update stack: %s", string(data))
+	}
+
+	return nil
 }
 
 func flattenEnvList(envList []interface{}) []map[string]string {

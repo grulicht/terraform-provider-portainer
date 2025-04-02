@@ -31,6 +31,7 @@ func resourceWebhook() *schema.Resource {
 		Create: resourceWebhookCreate,
 		Read:   resourceWebhookRead,
 		Delete: resourceWebhookDelete,
+		Update: resourceWebhookUpdate,
 		Schema: map[string]*schema.Schema{
 			"endpoint_id": {
 				Type:     schema.TypeInt,
@@ -40,7 +41,6 @@ func resourceWebhook() *schema.Resource {
 			"registry_id": {
 				Type:     schema.TypeInt,
 				Optional: true,
-				ForceNew: true,
 			},
 			"resource_id": {
 				Type:     schema.TypeString,
@@ -106,6 +106,42 @@ func resourceWebhookCreate(d *schema.ResourceData, meta interface{}) error {
 
 func resourceWebhookRead(d *schema.ResourceData, meta interface{}) error {
 	return nil
+}
+
+func resourceWebhookUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+	webhookID := d.Id()
+
+	if d.HasChange("registry_id") {
+		payload := map[string]interface{}{
+			"registryID": d.Get("registry_id").(int),
+		}
+
+		jsonPayload, err := json.Marshal(payload)
+		if err != nil {
+			return err
+		}
+
+		req, err := http.NewRequest("PUT", fmt.Sprintf("%s/webhooks/%s", client.Endpoint, webhookID), bytes.NewBuffer(jsonPayload))
+		if err != nil {
+			return err
+		}
+		req.Header.Set("X-API-Key", client.APIKey)
+		req.Header.Set("Content-Type", "application/json")
+
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return err
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode >= 400 {
+			body, _ := io.ReadAll(resp.Body)
+			return fmt.Errorf("failed to update webhook: %s", string(body))
+		}
+	}
+
+	return resourceWebhookRead(d, meta)
 }
 
 func resourceWebhookDelete(d *schema.ResourceData, meta interface{}) error {

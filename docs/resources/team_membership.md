@@ -23,7 +23,7 @@ resource "portainer_team_membership" "membership" {
 }
 ```
 ## Lifecycle & Behavior
-Team membrship are recreated if any of the attributes change (e.g. role).
+Team membrship are updated if any of the attributes change (e.g. role).
 
 - To delete a membrship created via Terraform, simply run:
 ```hcl

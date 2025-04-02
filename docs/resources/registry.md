@@ -101,7 +101,7 @@ resource "portainer_registry" "ecr" {
 ```
 
 ## Lifecycle & Behavior
-Registries are recreated if any of the arguments change.
+Registries are updated if any of the arguments change.
 - To delete a registry created via Terraform, simply run:
 ```hcl
 terraform destroy
@@ -111,7 +111,6 @@ terraform destroy
 ```hcl
 terraform apply
 ```
-> ⚠️ Portainer does not support updating registries via API. Changing attributes will recreate the resource.
 
 ## Arguments Reference
 | Name           | Type    | Required                      | Description                                                                 |

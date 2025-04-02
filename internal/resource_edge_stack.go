@@ -19,18 +19,16 @@ func resourceEdgeStack() *schema.Resource {
 		Create: resourceEdgeStackCreate,
 		Read:   resourceEdgeStackRead,
 		Delete: resourceEdgeStackDelete,
-		Update: nil,
+		Update: resourceEdgeStackUpdate,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"stack_file_content": {
 				Type:     schema.TypeString,
 				Optional: true,
-				ForceNew: true,
 			},
 			"stack_file_path": {
 				Type:     schema.TypeString,
@@ -68,25 +66,21 @@ func resourceEdgeStack() *schema.Resource {
 			"deployment_type": {
 				Type:        schema.TypeInt,
 				Required:    true,
-				ForceNew:    true,
 				Description: "0 = Docker Compose, 1 = Kubernetes",
 			},
 			"edge_groups": {
 				Type:     schema.TypeList,
 				Required: true,
-				ForceNew: true,
 				Elem:     &schema.Schema{Type: schema.TypeInt},
 			},
 			"registries": {
 				Type:     schema.TypeList,
 				Optional: true,
-				ForceNew: true,
 				Elem:     &schema.Schema{Type: schema.TypeInt},
 			},
 			"use_manifest_namespaces": {
 				Type:     schema.TypeBool,
 				Optional: true,
-				ForceNew: true,
 				Default:  false,
 			},
 		},
@@ -182,6 +176,47 @@ func resourceEdgeStackCreate(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	return fmt.Errorf("one of 'stack_file_content', 'stack_file_path', or 'repository_url' must be provided")
+}
+
+func resourceEdgeStackUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+
+	payload := map[string]interface{}{
+		"name":                   d.Get("name").(string),
+		"deploymentType":        d.Get("deployment_type").(int),
+		"edgeGroups":            toIntSlice(d.Get("edge_groups").([]interface{})),
+		"updateVersion":         true,
+		"useManifestNamespaces": d.Get("use_manifest_namespaces").(bool),
+	}
+
+	if v, ok := d.GetOk("stack_file_content"); ok {
+		payload["stackFileContent"] = v.(string)
+	}
+
+	jsonBody, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/edge_stacks/%s", client.Endpoint, d.Id()), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update edge stack: %s", string(data))
+	}
+
+	return resourceEdgeStackRead(d, meta)
 }
 
 func createEdgeStackFromJSON(client *APIClient, d *schema.ResourceData, payload map[string]interface{}, endpoint string) error {

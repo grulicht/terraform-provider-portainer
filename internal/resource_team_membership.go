@@ -28,6 +28,7 @@ func resourceTeamMembership() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceTeamMembershipCreate,
 		Read:   resourceTeamMembershipRead,
+		Update: resourceTeamMembershipUpdate,
 		Delete: resourceTeamMembershipDelete,
 
 		Importer: &schema.ResourceImporter{
@@ -38,19 +39,16 @@ func resourceTeamMembership() *schema.Resource {
 			"role": {
 				Type:        schema.TypeInt,
 				Required:    true,
-				ForceNew:    true,
 				Description: "Membership role: 1 = team leader, 2 = regular member",
 			},
 			"team_id": {
 				Type:        schema.TypeInt,
 				Required:    true,
-				ForceNew:    true,
 				Description: "ID of the team",
 			},
 			"user_id": {
 				Type:        schema.TypeInt,
 				Required:    true,
-				ForceNew:    true,
 				Description: "ID of the user",
 			},
 		},
@@ -66,7 +64,7 @@ func resourceTeamMembershipCreate(d *schema.ResourceData, meta interface{}) erro
 		UserID: d.Get("user_id").(int),
 	}
 
-	data, err := json.Marshal(payload)
+data, err := json.Marshal(payload)
 	if err != nil {
 		return err
 	}
@@ -131,8 +129,44 @@ func resourceTeamMembershipRead(d *schema.ResourceData, meta interface{}) error 
 		}
 	}
 
-	d.SetId("")
+d.SetId("")
 	return nil
+}
+
+func resourceTeamMembershipUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+	id := d.Id()
+
+	payload := TeamMembershipPayload{
+		Role:   d.Get("role").(int),
+		TeamID: d.Get("team_id").(int),
+		UserID: d.Get("user_id").(int),
+	}
+
+	data, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/team_memberships/%s", client.Endpoint, id), bytes.NewBuffer(data))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode >= 400 {
+		body, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update team membership: %s", body)
+	}
+
+	return resourceTeamMembershipRead(d, meta)
 }
 
 func resourceTeamMembershipImport(d *schema.ResourceData, meta interface{}) ([]*schema.ResourceData, error) {

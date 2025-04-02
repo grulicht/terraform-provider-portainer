@@ -17,23 +17,20 @@ func resourceEnvironment() *schema.Resource {
 		Create: resourceEnvironmentCreate,
 		Read:   resourceEnvironmentRead,
 		Delete: resourceEnvironmentDelete,
-		Update: nil,
+		Update: resourceEnvironmentUpdate,
 
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"environment_address": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew: true,
 			},
 			"type": {
 				Type:     schema.TypeInt,
 				Required: true,
-				ForceNew: true,
 				Description: "Environment type: 1 = Docker, 2 = Agent, 3 = Azure, 4 = Edge Agent, 5 = Kubernetes",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
 					t := val.(int)
@@ -47,13 +44,11 @@ func resourceEnvironment() *schema.Resource {
 				Type:     schema.TypeInt,
 				Optional: true,
 				Default:  1,
-				ForceNew: true,
 				Description: "ID of the Portainer endpoint group. Default is 1 (Unassigned).",
 			},
 			"tag_ids": {
 				Type:     schema.TypeList,
 				Optional: true,
-				ForceNew: true,
 				Elem:     &schema.Schema{Type: schema.TypeInt},
 				Description: "List of tag IDs to assign to the environment.",
 			},
@@ -72,12 +67,10 @@ func resourceEnvironmentCreate(d *schema.ResourceData, meta interface{}) error {
 	_ = writer.WriteField("EndpointCreationType", strconv.Itoa(d.Get("type").(int)))
 	_ = writer.WriteField("GroupID", strconv.Itoa(d.Get("group_id").(int)))
 
-	// Optional TLS fields (needed for self-signed agents)
 	_ = writer.WriteField("TLS", "true")
 	_ = writer.WriteField("TLSSkipVerify", "true")
 	_ = writer.WriteField("TLSSkipClientVerify", "true")
 
-	// Optional tags
 	if v, ok := d.GetOk("tag_ids"); ok {
 		tagIds := v.([]interface{})
 		formatted := "["
@@ -168,6 +161,45 @@ func resourceEnvironmentRead(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	return nil
+}
+
+func resourceEnvironmentUpdate(d *schema.ResourceData, meta interface{}) error {
+	client := meta.(*APIClient)
+
+	id := d.Id()
+
+	payload := map[string]interface{}{
+		"name":     d.Get("name").(string),
+		"url":      d.Get("environment_address").(string),
+		"publicURL": d.Get("environment_address").(string),
+		"groupID":  d.Get("group_id").(int),
+		"tagIDs":   d.Get("tag_ids").([]interface{}),
+	}
+
+	jsonBody, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/endpoints/%s", client.Endpoint, id), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update environment: %s", string(data))
+	}
+
+	return resourceEnvironmentRead(d, meta)
 }
 
 func resourceEnvironmentDelete(d *schema.ResourceData, meta interface{}) error {
