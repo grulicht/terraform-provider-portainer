@@ -79,6 +79,15 @@ $ export PORTAINER_API_KEY="your-api-key"
 | `portainer_webhook_execute`| ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_licenses`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_cloud_credentials`| ![Done](https://img.shields.io/badge/status-done-brightgreen)       |
+| `portainer_kubernetes_delete_object`                  | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_helm`                           | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_ingresscontrollers`             | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_namespace_ingresscontrollers`   | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_namespace_ingresses`            | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_namespace_services`             | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_namespace_system`               | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_namespace`                      | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_resource_control`                      | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 
 ---
 
