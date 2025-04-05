@@ -23,4 +23,13 @@ jobs:
           cache-dependency-path: go.sum
 
       - name: Check format
-        run: if [ "$(gofmt -s -l . | wc -l)" -gt 0 ]; then exit 1; fi
+        run: |
+          echo "Running gofmt check..."
+
+          to_format=$(gofmt -s -l .)
+
+          if [[ -n "$to_format" ]]; then
+            echo -e "::error::The following file/s need formatting:\n${to_format}"
+            echo -e "\nRun 'gofmt -s -w .' to fix them."
+            exit 1
+          fi
