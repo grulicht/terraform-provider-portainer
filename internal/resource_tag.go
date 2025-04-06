@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -16,11 +14,11 @@ func resourceTag() *schema.Resource {
 		Create: resourceTagCreate,
 		Read:   resourceTagRead,
 		Delete: resourceTagDelete,
-		Update: nil, // No update API – tag must be recreated
+		Update: nil,
 
 		Importer: &schema.ResourceImporter{
 			StateContext: schema.ImportStatePassthroughContext,
-		  },		  
+		},
 
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -39,21 +37,9 @@ func resourceTagCreate(d *schema.ResourceData, meta interface{}) error {
 		"name": d.Get("name").(string),
 	}
 
-	jsonBody, err := json.Marshal(payload)
+	resp, err := client.DoRequest("POST", "/tags", nil, payload)
 	if err != nil {
-		return err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/tags", client.Endpoint), bytes.NewBuffer(jsonBody))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to create tag: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -76,11 +62,7 @@ func resourceTagCreate(d *schema.ResourceData, meta interface{}) error {
 func resourceTagRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	// 1. Try primary request: GET /tags/{id}
-	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/tags/%s", client.Endpoint, d.Id()), nil)
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("GET", fmt.Sprintf("/tags/%s", d.Id()), nil, nil)
 	if err != nil {
 		return err
 	}
@@ -90,26 +72,16 @@ func resourceTagRead(d *schema.ResourceData, meta interface{}) error {
 		d.SetId("")
 		return nil
 	} else if resp.StatusCode == 200 {
-		// read response body
-		data, _ := io.ReadAll(resp.Body)
-		fmt.Printf("[DEBUG] Response from GET /tags/%s: %s\n", d.Id(), string(data))
-
-		// try to decode
 		var tag struct {
 			Name string `json:"Name"`
 		}
-		if err := json.Unmarshal(data, &tag); err == nil && tag.Name != "" {
+		if err := json.NewDecoder(resp.Body).Decode(&tag); err == nil && tag.Name != "" {
 			d.Set("name", tag.Name)
 			return nil
 		}
-		fmt.Println("[DEBUG] Failed to parse tag by ID, falling back to full list.")
 	}
 
-	// 2. Fallback: GET /tags and search by ID
-	reqList, _ := http.NewRequest("GET", fmt.Sprintf("%s/tags", client.Endpoint), nil)
-	reqList.Header.Set("X-API-Key", client.APIKey)
-
-	respList, err := http.DefaultClient.Do(reqList)
+	respList, err := client.DoRequest("GET", "/tags", nil, nil)
 	if err != nil {
 		return err
 	}
@@ -134,7 +106,6 @@ func resourceTagRead(d *schema.ResourceData, meta interface{}) error {
 		}
 	}
 
-	// If still not found
 	d.SetId("")
 	return nil
 }
@@ -142,10 +113,7 @@ func resourceTagRead(d *schema.ResourceData, meta interface{}) error {
 func resourceTagDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	req, _ := http.NewRequest("DELETE", fmt.Sprintf("%s/tags/%s", client.Endpoint, d.Id()), nil)
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("DELETE", fmt.Sprintf("/tags/%s", d.Id()), nil, nil)
 	if err != nil {
 		return err
 	}

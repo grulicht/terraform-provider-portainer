@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -19,52 +17,21 @@ func resourceRegistry() *schema.Resource {
 		Update: resourceRegistryUpdate,
 
 		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"url": {
-				Type:     schema.TypeString,
-				Required: true,
-			},
-			"base_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"type": {
-				Type:     schema.TypeInt,
-				Required: true,
-				ForceNew: true,
-			},
-			"authentication": {
-				Type:     schema.TypeBool,
-				Optional: true,
-				Default:  false,
-			},
-			"username": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"password": {
-				Type:      schema.TypeString,
-				Optional:  true,
-				Sensitive: true,
-			},
-			"instance_url": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
-			"aws_region": {
-				Type:     schema.TypeString,
-				Optional: true,
-			},
+			"name":           {Type: schema.TypeString, Required: true},
+			"url":            {Type: schema.TypeString, Required: true},
+			"base_url":       {Type: schema.TypeString, Optional: true},
+			"type":           {Type: schema.TypeInt, Required: true, ForceNew: true},
+			"authentication": {Type: schema.TypeBool, Optional: true, Default: false},
+			"username":       {Type: schema.TypeString, Optional: true},
+			"password":       {Type: schema.TypeString, Optional: true, Sensitive: true},
+			"instance_url":   {Type: schema.TypeString, Optional: true},
+			"aws_region":     {Type: schema.TypeString, Optional: true},
 		},
 	}
 }
 
 func resourceRegistryCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
-
 	registryType := d.Get("type").(int)
 	name := d.Get("name").(string)
 	url := d.Get("url").(string)
@@ -82,14 +49,12 @@ func resourceRegistryCreate(d *schema.ResourceData, meta interface{}) error {
 		body["authentication"] = true
 		body["username"] = d.Get("username").(string)
 		body["password"] = d.Get("password").(string)
-
 	case 2: // Azure
 		body["url"] = url
 		body["baseURL"] = baseURL
 		body["authentication"] = true
 		body["username"] = d.Get("username").(string)
 		body["password"] = d.Get("password").(string)
-
 	case 3: // Custom
 		body["url"] = url
 		body["baseURL"] = baseURL
@@ -98,30 +63,25 @@ func resourceRegistryCreate(d *schema.ResourceData, meta interface{}) error {
 			body["username"] = d.Get("username").(string)
 			body["password"] = d.Get("password").(string)
 		}
-
 	case 4: // GitLab
 		body["url"] = url
-		gitlab := map[string]interface{}{
-			"InstanceURL": d.Get("instance_url").(string),
-		}
 		body["authentication"] = true
 		body["username"] = d.Get("username").(string)
 		body["password"] = d.Get("password").(string)
-		body["gitlab"] = gitlab
-
+		body["gitlab"] = map[string]interface{}{
+			"InstanceURL": d.Get("instance_url").(string),
+		}
 	case 5: // ProGet
 		body["url"] = url
 		body["baseURL"] = baseURL
 		body["authentication"] = true
 		body["username"] = d.Get("username").(string)
 		body["password"] = d.Get("password").(string)
-
 	case 6: // DockerHub
-	    body["url"] = url
+		body["url"] = url
 		body["authentication"] = true
 		body["username"] = d.Get("username").(string)
 		body["password"] = d.Get("password").(string)
-
 	case 7: // AWS ECR
 		ecr := map[string]interface{}{}
 		if v, ok := d.GetOk("aws_region"); ok {
@@ -134,27 +94,17 @@ func resourceRegistryCreate(d *schema.ResourceData, meta interface{}) error {
 			body["username"] = d.Get("username").(string)
 			body["password"] = d.Get("password").(string)
 		}
-
 	default:
 		return fmt.Errorf("unsupported registry type: %d", registryType)
 	}
 
-	jsonBody, _ := json.Marshal(body)
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/registries", client.Endpoint), bytes.NewBuffer(jsonBody))
+	resp, err := client.DoRequest("POST", "/registries", nil, body)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to create registry: %w", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+	if resp.StatusCode >= 400 {
 		data, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("failed to create registry: %s", string(data))
 	}
@@ -171,7 +121,6 @@ func resourceRegistryCreate(d *schema.ResourceData, meta interface{}) error {
 }
 
 func resourceRegistryRead(d *schema.ResourceData, meta interface{}) error {
-	// Not implemented (optional for now)
 	return nil
 }
 
@@ -180,12 +129,12 @@ func resourceRegistryUpdate(d *schema.ResourceData, meta interface{}) error {
 	id := d.Id()
 
 	body := map[string]interface{}{
-		"name":          d.Get("name").(string),
-		"url":           d.Get("url").(string),
-		"baseURL":       d.Get("base_url").(string),
+		"name":           d.Get("name").(string),
+		"url":            d.Get("url").(string),
+		"baseURL":        d.Get("base_url").(string),
 		"authentication": d.Get("authentication").(bool),
-		"username":      d.Get("username").(string),
-		"password":      d.Get("password").(string),
+		"username":       d.Get("username").(string),
+		"password":       d.Get("password").(string),
 	}
 
 	if d.Get("type").(int) == 4 {
@@ -193,24 +142,15 @@ func resourceRegistryUpdate(d *schema.ResourceData, meta interface{}) error {
 			"InstanceURL": d.Get("instance_url").(string),
 		}
 	}
-
 	if d.Get("type").(int) == 7 {
 		body["ecr"] = map[string]interface{}{
 			"Region": d.Get("aws_region").(string),
 		}
 	}
 
-	jsonBody, _ := json.Marshal(body)
-	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/registries/%s", client.Endpoint, id), bytes.NewBuffer(jsonBody))
+	resp, err := client.DoRequest("PUT", fmt.Sprintf("/registries/%s", id), nil, body)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to update registry: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -224,11 +164,7 @@ func resourceRegistryUpdate(d *schema.ResourceData, meta interface{}) error {
 
 func resourceRegistryDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
-
-	req, _ := http.NewRequest("DELETE", fmt.Sprintf("%s/registries/%s", client.Endpoint, d.Id()), nil)
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("DELETE", fmt.Sprintf("/registries/%s", d.Id()), nil, nil)
 	if err != nil {
 		return err
 	}

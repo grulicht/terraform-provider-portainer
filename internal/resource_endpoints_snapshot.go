@@ -15,9 +15,9 @@ func resourceEndpointsSnapshot() *schema.Resource {
 		Delete: resourceEndpointsSnapshotDelete,
 		Schema: map[string]*schema.Schema{
 			"endpoint_id": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				ForceNew: true,
+				Type:        schema.TypeInt,
+				Optional:    true,
+				ForceNew:    true,
 				Description: "ID of the endpoint to snapshot. If omitted, all endpoints will be snapshotted.",
 			},
 		},
@@ -27,27 +27,19 @@ func resourceEndpointsSnapshot() *schema.Resource {
 func resourceEndpointsSnapshotCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	var req *http.Request
-	var err error
+	var url string
+	var id string
 
 	if v, ok := d.GetOk("endpoint_id"); ok {
-		id := v.(int)
-		req, err = http.NewRequest("POST", fmt.Sprintf("%s/endpoints/%d/snapshot", client.Endpoint, id), nil)
-		if err != nil {
-			return err
-		}
-		d.SetId(strconv.Itoa(id))
+		eid := v.(int)
+		url = fmt.Sprintf("%s/endpoints/%d/snapshot", client.Endpoint, eid)
+		id = strconv.Itoa(eid)
 	} else {
-		req, err = http.NewRequest("POST", fmt.Sprintf("%s/endpoints/snapshot", client.Endpoint), nil)
-		if err != nil {
-			return err
-		}
-		d.SetId("all")
+		url = fmt.Sprintf("%s/endpoints/snapshot", client.Endpoint)
+		id = "all"
 	}
 
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest(http.MethodPost, url, nil, nil)
 	if err != nil {
 		return err
 	}
@@ -57,6 +49,7 @@ func resourceEndpointsSnapshotCreate(d *schema.ResourceData, meta interface{}) e
 		return fmt.Errorf("failed to snapshot endpoint(s): HTTP %d", resp.StatusCode)
 	}
 
+	d.SetId(id)
 	return nil
 }
 

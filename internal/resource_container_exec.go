@@ -25,13 +25,13 @@ func resourceContainerExec() *schema.Resource {
 		Delete: resourceContainerExecDelete,
 		Update: nil,
 		Schema: map[string]*schema.Schema{
-			"endpoint_id":   {Type: schema.TypeInt, Required: true, ForceNew: true},
-			"service_name":  {Type: schema.TypeString, Required: true, ForceNew: true},
-			"user":          {Type: schema.TypeString, Optional: true, ForceNew: true, Default: "root:root"},
-			"command":       {Type: schema.TypeString, Required: true, ForceNew: true},
-			"wait":          {Type: schema.TypeInt, Optional: true, ForceNew: true, Default: 0},
-			"mode":          {Type: schema.TypeString, Optional: true, ForceNew: true, Default: "standalone", Description: "Deployment mode: 'standalone' (default) or 'swarm'"},
-			"output":        {Type: schema.TypeString, Computed: true, ForceNew: true},
+			"endpoint_id":  {Type: schema.TypeInt, Required: true, ForceNew: true},
+			"service_name": {Type: schema.TypeString, Required: true, ForceNew: true},
+			"user":         {Type: schema.TypeString, Optional: true, ForceNew: true, Default: "root:root"},
+			"command":      {Type: schema.TypeString, Required: true, ForceNew: true},
+			"wait":         {Type: schema.TypeInt, Optional: true, ForceNew: true, Default: 0},
+			"mode":         {Type: schema.TypeString, Optional: true, ForceNew: true, Default: "standalone", Description: "Deployment mode: 'standalone' (default) or 'swarm'"},
+			"output":       {Type: schema.TypeString, Computed: true, ForceNew: true},
 		},
 	}
 }

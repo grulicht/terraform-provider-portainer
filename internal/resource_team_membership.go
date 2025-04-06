@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -64,21 +62,9 @@ func resourceTeamMembershipCreate(d *schema.ResourceData, meta interface{}) erro
 		UserID: d.Get("user_id").(int),
 	}
 
-data, err := json.Marshal(payload)
+	resp, err := client.DoRequest("POST", "/team_memberships", nil, payload)
 	if err != nil {
-		return err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/team_memberships", client.Endpoint), bytes.NewBuffer(data))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to create team membership: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -99,15 +85,9 @@ data, err := json.Marshal(payload)
 func resourceTeamMembershipRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/team_memberships", client.Endpoint), nil)
+	resp, err := client.DoRequest("GET", "/team_memberships", nil, nil)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to fetch team memberships list: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -129,7 +109,7 @@ func resourceTeamMembershipRead(d *schema.ResourceData, meta interface{}) error 
 		}
 	}
 
-d.SetId("")
+	d.SetId("")
 	return nil
 }
 
@@ -143,21 +123,9 @@ func resourceTeamMembershipUpdate(d *schema.ResourceData, meta interface{}) erro
 		UserID: d.Get("user_id").(int),
 	}
 
-	data, err := json.Marshal(payload)
+	resp, err := client.DoRequest("PUT", fmt.Sprintf("/team_memberships/%s", id), nil, payload)
 	if err != nil {
-		return err
-	}
-
-	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/team_memberships/%s", client.Endpoint, id), bytes.NewBuffer(data))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to update team membership: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -180,15 +148,9 @@ func resourceTeamMembershipDelete(d *schema.ResourceData, meta interface{}) erro
 	client := meta.(*APIClient)
 	id := d.Id()
 
-	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/team_memberships/%s", client.Endpoint, id), nil)
+	resp, err := client.DoRequest("DELETE", fmt.Sprintf("/team_memberships/%s", id), nil, nil)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to delete team membership: %w", err)
 	}
 	defer resp.Body.Close()
 

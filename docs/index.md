@@ -15,6 +15,7 @@ It supports provisioning and configuration of Portainer users and will be extend
 provider "portainer" {
   endpoint = "..."
   api_key  = "..."
+  skip_ssl_verify  = true # optional (default value is `false`)
 }
 ```
 
@@ -38,6 +39,7 @@ You can provide your configuration via the environment variables representing yo
 ```hcl
 $ export PORTAINER_ENDPOINT="http://portainer.example.com"
 $ export PORTAINER_API_KEY="your-api-key"
+$ export PORTAINER_SKIP_SSL_VERIFY=true
 ```
 
 ### Arguments Reference
@@ -45,6 +47,7 @@ $ export PORTAINER_API_KEY="your-api-key"
 |------------|--------|----------|-----------------------------------------------------------------------------|
 | `endpoint` | string | ✅ yes   | The URL of the Portainer instance. `/api` will be appended automatically if missing. |
 | `api_key`  | string | ✅ yes   | API key used to authenticate requests.                                      |
+| `skip_ssl_verify` | boolean | ❌ no | 	Set to `true` to skip TLS certificate verification (useful for self-signed certs). Default: `false` |
 
 
 ## 🧩 Supported Resources

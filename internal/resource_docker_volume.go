@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -66,25 +64,12 @@ func resourceDockerVolumeCreate(d *schema.ResourceData, meta interface{}) error 
 		DriverOpts: convertMapString(d.Get("driver_opts").(map[string]interface{})),
 		Labels:     convertMapString(d.Get("labels").(map[string]interface{})),
 	}
-
 	endpointID := d.Get("endpoint_id").(int)
 
-	payload, err := json.Marshal(volume)
+	path := fmt.Sprintf("/endpoints/%d/docker/volumes/create", endpointID)
+	resp, err := client.DoRequest(http.MethodPost, path, nil, volume)
 	if err != nil {
-		return err
-	}
-
-	url := fmt.Sprintf("%s/endpoints/%d/docker/volumes/create", client.Endpoint, endpointID)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payload))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to create volume: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -107,16 +92,10 @@ func resourceDockerVolumeDelete(d *schema.ResourceData, meta interface{}) error 
 	endpointID := d.Get("endpoint_id").(int)
 	name := d.Get("name").(string)
 
-	u := fmt.Sprintf("%s/endpoints/%d/docker/volumes/%s", client.Endpoint, endpointID, url.PathEscape(name))
-	req, err := http.NewRequest("DELETE", u, nil)
+	path := fmt.Sprintf("/endpoints/%d/docker/volumes/%s", endpointID, url.PathEscape(name))
+	resp, err := client.DoRequest(http.MethodDelete, path, nil, nil)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to delete volume: %w", err)
 	}
 	defer resp.Body.Close()
 

@@ -1,11 +1,10 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
+	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -71,21 +70,9 @@ func resourceWebhookCreate(d *schema.ResourceData, meta interface{}) error {
 		WebhookType: d.Get("webhook_type").(int),
 	}
 
-	jsonPayload, err := json.Marshal(payload)
+	resp, err := client.DoRequest("POST", "/webhooks", nil, payload)
 	if err != nil {
-		return err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/webhooks", client.Endpoint), bytes.NewBuffer(jsonPayload))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to create webhook: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -99,7 +86,7 @@ func resourceWebhookCreate(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	d.SetId(fmt.Sprintf("%d", result.ID))
+	d.SetId(strconv.Itoa(result.ID))
 	d.Set("token", result.Token)
 	return nil
 }
@@ -117,21 +104,9 @@ func resourceWebhookUpdate(d *schema.ResourceData, meta interface{}) error {
 			"registryID": d.Get("registry_id").(int),
 		}
 
-		jsonPayload, err := json.Marshal(payload)
+		resp, err := client.DoRequest("PUT", fmt.Sprintf("/webhooks/%s", webhookID), nil, payload)
 		if err != nil {
-			return err
-		}
-
-		req, err := http.NewRequest("PUT", fmt.Sprintf("%s/webhooks/%s", client.Endpoint, webhookID), bytes.NewBuffer(jsonPayload))
-		if err != nil {
-			return err
-		}
-		req.Header.Set("X-API-Key", client.APIKey)
-		req.Header.Set("Content-Type", "application/json")
-
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			return err
+			return fmt.Errorf("failed to update webhook: %w", err)
 		}
 		defer resp.Body.Close()
 
@@ -148,15 +123,9 @@ func resourceWebhookDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 	webhookID := d.Id()
 
-	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/webhooks/%s", client.Endpoint, webhookID), nil)
+	resp, err := client.DoRequest("DELETE", fmt.Sprintf("/webhooks/%s", webhookID), nil, nil)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to delete webhook: %w", err)
 	}
 	defer resp.Body.Close()
 

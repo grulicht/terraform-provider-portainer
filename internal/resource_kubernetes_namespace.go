@@ -206,4 +206,3 @@ func resourceKubernetesNamespaceDelete(d *schema.ResourceData, meta interface{})
 	d.SetId("")
 	return nil
 }
-

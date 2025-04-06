@@ -14,18 +14,18 @@ func resourceWebhookExecute() *schema.Resource {
 		Delete: resourceWebhookExecuteDelete,
 		Schema: map[string]*schema.Schema{
 			"token": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
 				ConflictsWith: []string{"stack_id"},
-				Description: "Webhook token for service restart webhook",
+				Description:   "Webhook token for service restart webhook",
 			},
 			"stack_id": {
-				Type:     schema.TypeString,
-				Optional: true,
-				ForceNew: true,
+				Type:          schema.TypeString,
+				Optional:      true,
+				ForceNew:      true,
 				ConflictsWith: []string{"token"},
-				Description: "Stack ID for triggering stack git update",
+				Description:   "Stack ID for triggering stack git update",
 			},
 		},
 	}

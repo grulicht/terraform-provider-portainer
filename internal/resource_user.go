@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -59,8 +57,8 @@ func resourceUser() *schema.Resource {
 				Default:  "terraform-generated-api-key",
 			},
 			"api_key_raw": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:      schema.TypeString,
+				Computed:  true,
 				Sensitive: true,
 			},
 		},
@@ -90,18 +88,9 @@ func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
 		body["Password"] = password
 	}
 
-	jsonBody, _ := json.Marshal(body)
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/users", client.Endpoint), bytes.NewBuffer(jsonBody))
+	resp, err := client.DoRequest("POST", "/users", nil, body)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to create user: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -120,8 +109,7 @@ func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
 	}
 	d.SetId(strconv.Itoa(result.ID))
 
-	teamID, ok := d.GetOk("team_id")
-	if ok {
+	if teamID, ok := d.GetOk("team_id"); ok {
 		if role != 2 {
 			return fmt.Errorf("team_id can only be used with standard users (role = 2)")
 		}
@@ -131,18 +119,10 @@ func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
 			"TeamID": teamID.(int),
 			"Role":   2,
 		}
-		jsonMembership, _ := json.Marshal(teamMembership)
 
-		req, err := http.NewRequest("POST", fmt.Sprintf("%s/team_memberships", client.Endpoint), bytes.NewBuffer(jsonMembership))
+		resp, err := client.DoRequest("POST", "/team_memberships", nil, teamMembership)
 		if err != nil {
-			return err
-		}
-		req.Header.Set("X-API-Key", client.APIKey)
-		req.Header.Set("Content-Type", "application/json")
-
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			return err
+			return fmt.Errorf("failed to assign user to team: %w", err)
 		}
 		defer resp.Body.Close()
 
@@ -161,16 +141,10 @@ func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
 			"description": description,
 			"password":    password,
 		}
-		jsonTokenBody, _ := json.Marshal(apiPayload)
-		req, err := http.NewRequest("POST", fmt.Sprintf("%s/users/%d/tokens", client.Endpoint, result.ID), bytes.NewBuffer(jsonTokenBody))
+
+		resp, err := client.DoRequest("POST", fmt.Sprintf("/users/%d/tokens", result.ID), nil, apiPayload)
 		if err != nil {
-			return err
-		}
-		req.Header.Set("X-API-Key", client.APIKey)
-		req.Header.Set("Content-Type", "application/json")
-		resp, err := http.DefaultClient.Do(req)
-		if err != nil {
-			return err
+			return fmt.Errorf("failed to generate API key: %w", err)
 		}
 		defer resp.Body.Close()
 
@@ -194,10 +168,7 @@ func resourceUserCreate(d *schema.ResourceData, meta interface{}) error {
 func resourceUserRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/users/%s", client.Endpoint, d.Id()), nil)
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("GET", fmt.Sprintf("/users/%s", d.Id()), nil, nil)
 	if err != nil {
 		return err
 	}
@@ -226,10 +197,7 @@ func resourceUserRead(d *schema.ResourceData, meta interface{}) error {
 func resourceUserReadByUsername(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	req, _ := http.NewRequest("GET", fmt.Sprintf("%s/users", client.Endpoint), nil)
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("GET", "/users", nil, nil)
 	if err != nil {
 		return err
 	}
@@ -270,15 +238,7 @@ func resourceUserUpdate(d *schema.ResourceData, meta interface{}) error {
 			"password":    oldPw.(string),
 			"newPassword": newPw.(string),
 		}
-		jsonBody, _ := json.Marshal(payload)
-		req, err := http.NewRequest("PUT", fmt.Sprintf("%s/users/%s/passwd", client.Endpoint, id), bytes.NewBuffer(jsonBody))
-		if err != nil {
-			return err
-		}
-		req.Header.Set("X-API-Key", client.APIKey)
-		req.Header.Set("Content-Type", "application/json")
-
-		resp, err := http.DefaultClient.Do(req)
+		resp, err := client.DoRequest("PUT", fmt.Sprintf("/users/%s/passwd", id), nil, payload)
 		if err != nil {
 			return err
 		}
@@ -295,15 +255,7 @@ func resourceUserUpdate(d *schema.ResourceData, meta interface{}) error {
 		"role":     d.Get("role").(int),
 		"useCache": true,
 	}
-	jsonBody, _ := json.Marshal(body)
-	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/users/%s", client.Endpoint, id), bytes.NewBuffer(jsonBody))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("PUT", fmt.Sprintf("/users/%s", id), nil, body)
 	if err != nil {
 		return err
 	}
@@ -311,7 +263,7 @@ func resourceUserUpdate(d *schema.ResourceData, meta interface{}) error {
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		data, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("failed to update user: %s", data)
+		return fmt.Errorf("failed to update user: %s", string(data))
 	}
 
 	return resourceUserRead(d, meta)
@@ -322,18 +274,10 @@ func resourceUserDelete(d *schema.ResourceData, meta interface{}) error {
 	id := d.Id()
 
 	if keyID, ok := d.Get("api_key_id").(int); ok && keyID > 0 {
-		req, _ := http.NewRequest("DELETE", fmt.Sprintf("%s/users/%s/tokens/%d", client.Endpoint, id, keyID), nil)
-		req.Header.Set("X-API-Key", client.APIKey)
-		resp, err := http.DefaultClient.Do(req)
-		if err == nil {
-			defer resp.Body.Close()
-		}
+		_, _ = client.DoRequest("DELETE", fmt.Sprintf("/users/%s/tokens/%d", id, keyID), nil, nil)
 	}
 
-	req, _ := http.NewRequest("DELETE", fmt.Sprintf("%s/users/%s", client.Endpoint, id), nil)
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("DELETE", fmt.Sprintf("/users/%s", id), nil, nil)
 	if err != nil {
 		return err
 	}

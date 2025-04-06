@@ -1,18 +1,15 @@
 package internal
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
 type sslSettings struct {
-	Cert       string `json:"cert"`
-	Key        string `json:"key"`
+	Cert        string `json:"cert"`
+	Key         string `json:"key"`
 	HTTPEnabled bool   `json:"httpenabled"`
 }
 
@@ -48,31 +45,19 @@ func resourceSSLSettingsUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
 	payload := sslSettings{
-		Cert:       d.Get("cert").(string),
-		Key:        d.Get("key").(string),
+		Cert:        d.Get("cert").(string),
+		Key:         d.Get("key").(string),
 		HTTPEnabled: d.Get("http_enabled").(bool),
 	}
 
-	jsonPayload, err := json.Marshal(payload)
+	resp, err := client.DoRequest("PUT", "/ssl", nil, payload)
 	if err != nil {
-		return err
-	}
-
-	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/ssl", client.Endpoint), bytes.NewBuffer(jsonPayload))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to update SSL settings: %w", err)
 	}
 	defer resp.Body.Close()
 
-	body, _ := io.ReadAll(resp.Body)
 	if resp.StatusCode >= 400 {
+		body, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("failed to update SSL settings: %s", string(body))
 	}
 

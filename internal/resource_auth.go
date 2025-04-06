@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -18,20 +17,20 @@ func resourceAuth() *schema.Resource {
 
 		Schema: map[string]*schema.Schema{
 			"username": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:      schema.TypeString,
+				Required:  true,
 				Sensitive: true,
-				ForceNew: true,
+				ForceNew:  true,
 			},
 			"password": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:      schema.TypeString,
+				Required:  true,
 				Sensitive: true,
-				ForceNew: true,
+				ForceNew:  true,
 			},
 			"jwt": {
-				Type:     schema.TypeString,
-				Computed: true,
+				Type:      schema.TypeString,
+				Computed:  true,
 				Sensitive: true,
 			},
 		},
@@ -46,21 +45,13 @@ func resourceAuthCreate(d *schema.ResourceData, meta interface{}) error {
 		"password": d.Get("password").(string),
 	}
 
-	jsonBody, _ := json.Marshal(creds)
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/auth", client.Endpoint), bytes.NewBuffer(jsonBody))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("POST", "/auth", nil, creds)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		data, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("failed to authenticate: %s", string(data))
 	}

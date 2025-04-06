@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -20,7 +18,7 @@ func resourceTeam() *schema.Resource {
 
 		Importer: &schema.ResourceImporter{
 			State: schema.ImportStatePassthrough,
-		},		
+		},
 
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -38,16 +36,8 @@ func resourceTeamCreate(d *schema.ResourceData, meta interface{}) error {
 	body := map[string]interface{}{
 		"Name": teamName,
 	}
-	jsonBody, _ := json.Marshal(body)
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/teams", client.Endpoint), bytes.NewBuffer(jsonBody))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("POST", "/teams", nil, body)
 	if err != nil {
 		return err
 	}
@@ -72,13 +62,7 @@ func resourceTeamCreate(d *schema.ResourceData, meta interface{}) error {
 func resourceTeamRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/teams/%s", client.Endpoint, d.Id()), nil)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("GET", fmt.Sprintf("/teams/%s", d.Id()), nil, nil)
 	if err != nil {
 		return err
 	}
@@ -109,15 +93,7 @@ func resourceTeamUpdate(d *schema.ResourceData, meta interface{}) error {
 		"name": d.Get("name").(string),
 	}
 
-	jsonBody, _ := json.Marshal(body)
-	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/teams/%s", client.Endpoint, d.Id()), bytes.NewBuffer(jsonBody))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("PUT", fmt.Sprintf("/teams/%s", d.Id()), nil, body)
 	if err != nil {
 		return err
 	}
@@ -134,20 +110,13 @@ func resourceTeamUpdate(d *schema.ResourceData, meta interface{}) error {
 func resourceTeamDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/teams/%s", client.Endpoint, d.Id()), nil)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("DELETE", fmt.Sprintf("/teams/%s", d.Id()), nil, nil)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 404 || resp.StatusCode == 204 {
-		// Treat not found or success as successful deletion
 		return nil
 	}
 

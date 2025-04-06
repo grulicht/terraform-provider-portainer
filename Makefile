@@ -20,6 +20,8 @@ help:
 	@echo "  up             Start Docker Compose services"
 	@echo "  launch         Open https://localhost:9000 in default browser"
 	@echo "  down           Stop Docker Compose services"
+	@echo "  go-fmt-check   Check formatting of Go source files"
+	@echo "  go-fmt         Format Go source files"
 	@echo ""
 	@echo "Environment:"
 	@echo "  TDIR           Directory to run Terraform/OpenTofu in (set internally)"
@@ -132,3 +134,24 @@ launch:
 .PHONY: down
 down:
 	docker compose down
+
+### Go
+.PHONY: go-fmt-check
+go-fmt-check:
+	@echo "Checking Go code formatting..."
+	@unformatted=$$(find . -type f -name '*.go' -not -path './portainer_data/*' 2>/dev/null | xargs gofmt -s -l); \
+	if [ -n "$$unformatted" ]; then \
+		echo "The following files are not properly formatted:"; \
+		echo "$$unformatted"; \
+		echo ""; \
+		echo "Run 'make go-fmt' to format them."; \
+		exit 1; \
+	else \
+		echo "All Go files are properly formatted."; \
+	fi
+
+.PHONY: go-fmt
+go-fmt:
+	@echo "Formatting Go code..."
+	@find . -type f -name '*.go' -not -path './portainer_data/*' 2>/dev/null | xargs gofmt -s -w
+	@echo "Done."

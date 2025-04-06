@@ -33,7 +33,7 @@ func resourcePortainerStack() *schema.Resource {
 				Description: "Creation method: 'string', 'file', 'repository', or 'url'",
 				ForceNew:    true,
 			},
-			"name":                 {Type: schema.TypeString, Required: true, ForceNew: true},
+			"name":                {Type: schema.TypeString, Required: true, ForceNew: true},
 			"endpoint_id":         {Type: schema.TypeInt, Required: true, ForceNew: true},
 			"swarm_id":            {Type: schema.TypeString, Optional: true, ForceNew: true, Computed: true},
 			"namespace":           {Type: schema.TypeString, Optional: true, ForceNew: true},
@@ -177,14 +177,14 @@ func resourcePortainerStackUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	if method == "repository" {
 		payload := map[string]interface{}{
-			"env":                     flattenEnvList(d.Get("env").([]interface{})),
-			"prune":                   true,
-			"pullImage":               false,
+			"env":                      flattenEnvList(d.Get("env").([]interface{})),
+			"prune":                    true,
+			"pullImage":                false,
 			"repositoryAuthentication": true,
-			"repositoryUsername":      d.Get("repository_username").(string),
-			"repositoryPassword":      d.Get("repository_password").(string),
-			"repositoryReferenceName": d.Get("repository_reference_name").(string),
-			"stackName":               d.Get("name").(string),
+			"repositoryUsername":       d.Get("repository_username").(string),
+			"repositoryPassword":       d.Get("repository_password").(string),
+			"repositoryReferenceName":  d.Get("repository_reference_name").(string),
+			"stackName":                d.Get("name").(string),
 		}
 
 		jsonBody, err := json.Marshal(payload)
@@ -215,10 +215,10 @@ func resourcePortainerStackUpdate(d *schema.ResourceData, meta interface{}) erro
 
 	// fallback to default update (string based)
 	payload := map[string]interface{}{
-		"env":               flattenEnvList(d.Get("env").([]interface{})),
+		"env":              flattenEnvList(d.Get("env").([]interface{})),
 		"stackFileContent": d.Get("stack_file_content").(string),
-		"prune":             true,
-		"pullImage":         false,
+		"prune":            true,
+		"pullImage":        false,
 	}
 
 	jsonBody, err := json.Marshal(payload)
@@ -347,15 +347,15 @@ func createStackStandaloneFile(d *schema.ResourceData, client *APIClient) error 
 func createStackStandaloneRepo(d *schema.ResourceData, client *APIClient) error {
 	payload := map[string]interface{}{
 		"name":                     d.Get("name").(string),
-		"composeFile":             d.Get("file_path_in_repository").(string),
-		"repositoryURL":           d.Get("repository_url").(string),
-		"repositoryUsername":      d.Get("repository_username").(string),
-		"repositoryPassword":      d.Get("repository_password").(string),
-		"repositoryReferenceName": d.Get("repository_reference_name").(string),
+		"composeFile":              d.Get("file_path_in_repository").(string),
+		"repositoryURL":            d.Get("repository_url").(string),
+		"repositoryUsername":       d.Get("repository_username").(string),
+		"repositoryPassword":       d.Get("repository_password").(string),
+		"repositoryReferenceName":  d.Get("repository_reference_name").(string),
 		"repositoryAuthentication": true,
-		"env":                     flattenEnvList(d.Get("env").([]interface{})),
-		"fromAppTemplate":         false,
-		"tlsskipVerify":           d.Get("tlsskip_verify").(bool),
+		"env":                      flattenEnvList(d.Get("env").([]interface{})),
+		"fromAppTemplate":          false,
+		"tlsskipVerify":            d.Get("tlsskip_verify").(bool),
 	}
 	endpointID := d.Get("endpoint_id").(int)
 	url := fmt.Sprintf("%s/stacks/create/standalone/repository?endpointId=%d", client.Endpoint, endpointID)
@@ -467,16 +467,16 @@ func createStackSwarmFile(d *schema.ResourceData, client *APIClient) error {
 func createStackSwarmRepo(d *schema.ResourceData, client *APIClient) error {
 	payload := map[string]interface{}{
 		"name":                     d.Get("name").(string),
-		"composeFile":             d.Get("file_path_in_repository").(string),
-		"repositoryURL":           d.Get("repository_url").(string),
-		"repositoryUsername":      d.Get("repository_username").(string),
-		"repositoryPassword":      d.Get("repository_password").(string),
-		"repositoryReferenceName": d.Get("repository_reference_name").(string),
+		"composeFile":              d.Get("file_path_in_repository").(string),
+		"repositoryURL":            d.Get("repository_url").(string),
+		"repositoryUsername":       d.Get("repository_username").(string),
+		"repositoryPassword":       d.Get("repository_password").(string),
+		"repositoryReferenceName":  d.Get("repository_reference_name").(string),
 		"repositoryAuthentication": true,
-		"env":                     flattenEnvList(d.Get("env").([]interface{})),
-		"fromAppTemplate":         false,
-		"tlsskipVerify":           d.Get("tlsskip_verify").(bool),
-		"swarmID":                 d.Get("swarm_id").(string),
+		"env":                      flattenEnvList(d.Get("env").([]interface{})),
+		"fromAppTemplate":          false,
+		"tlsskipVerify":            d.Get("tlsskip_verify").(bool),
+		"swarmID":                  d.Get("swarm_id").(string),
 	}
 	endpointID := d.Get("endpoint_id").(int)
 	url := fmt.Sprintf("%s/stacks/create/swarm/repository?endpointId=%d", client.Endpoint, endpointID)
@@ -542,17 +542,17 @@ func createStackK8sString(d *schema.ResourceData, client *APIClient) error {
 
 func createStackK8sRepo(d *schema.ResourceData, client *APIClient) error {
 	payload := map[string]interface{}{
-		"stackName":               d.Get("name").(string),
-		"manifestFile":            d.Get("file_path_in_repository").(string),
-		"namespace":               d.Get("namespace").(string),
-		"composeFormat":           d.Get("compose_format").(bool),
-		"repositoryURL":           d.Get("repository_url").(string),
-		"repositoryUsername":      d.Get("repository_username").(string),
-		"repositoryPassword":      d.Get("repository_password").(string),
-		"repositoryReferenceName": d.Get("repository_reference_name").(string),
+		"stackName":                d.Get("name").(string),
+		"manifestFile":             d.Get("file_path_in_repository").(string),
+		"namespace":                d.Get("namespace").(string),
+		"composeFormat":            d.Get("compose_format").(bool),
+		"repositoryURL":            d.Get("repository_url").(string),
+		"repositoryUsername":       d.Get("repository_username").(string),
+		"repositoryPassword":       d.Get("repository_password").(string),
+		"repositoryReferenceName":  d.Get("repository_reference_name").(string),
 		"repositoryAuthentication": true,
-		"tlsskipVerify":           d.Get("tlsskip_verify").(bool),
-		"fromAppTemplate":         false,
+		"tlsskipVerify":            d.Get("tlsskip_verify").(bool),
+		"fromAppTemplate":          false,
 	}
 	endpointID := d.Get("endpoint_id").(int)
 	url := fmt.Sprintf("%s/stacks/create/kubernetes/repository?endpointId=%d", client.Endpoint, endpointID)

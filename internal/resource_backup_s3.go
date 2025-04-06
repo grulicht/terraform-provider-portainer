@@ -1,11 +1,8 @@
 package internal
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -17,16 +14,16 @@ func resourceBackupS3() *schema.Resource {
 		Delete: resourceBackupS3Delete,
 		Schema: map[string]*schema.Schema{
 			"access_key_id": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:      schema.TypeString,
+				Required:  true,
 				Sensitive: true,
-				ForceNew: true,
+				ForceNew:  true,
 			},
 			"secret_access_key": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:      schema.TypeString,
+				Required:  true,
 				Sensitive: true,
-				ForceNew: true,
+				ForceNew:  true,
 			},
 			"bucket_name": {
 				Type:     schema.TypeString,
@@ -44,10 +41,10 @@ func resourceBackupS3() *schema.Resource {
 				ForceNew: true,
 			},
 			"password": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:      schema.TypeString,
+				Required:  true,
 				Sensitive: true,
-				ForceNew: true,
+				ForceNew:  true,
 			},
 			"cron_rule": {
 				Type:     schema.TypeString,
@@ -74,16 +71,7 @@ func resourceBackupS3Create(d *schema.ResourceData, meta interface{}) error {
 		body["cronRule"] = v.(string)
 	}
 
-	jsonBody, _ := json.Marshal(body)
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/backup/s3/execute", client.Endpoint), bytes.NewBuffer(jsonBody))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("POST", "/backup/s3/execute", nil, body)
 	if err != nil {
 		return err
 	}

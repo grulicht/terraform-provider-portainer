@@ -27,7 +27,7 @@ jobs:
       - name: 🧪 Run Terraform E2E tests
         run: |
           APPLY_ONLY_DIRS=("stack" "webhook" "container_exec" "backup" "auth" "settings" "open_amt" "endpoint_snapshot" "endpoint_settings" "ssl")
-          FULL_CYCLE_DIRS=("custom_template" "docker_image" "container_network" "docker_volume" "stack" "endpoint_group" "tag" "user-team-teammembership")
+          FULL_CYCLE_DIRS=("custom_template" "docker_image" "docker_network" "docker_volume" "stack" "endpoint_group" "tag" "user-team-teammembership" "registry")
 
           for dir in "${FULL_CYCLE_DIRS[@]}"; do
             if [ -d "e2e-tests/$dir" ]; then

@@ -1,11 +1,8 @@
 package internal
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -54,19 +51,9 @@ func resourceOpenAMTCreate(d *schema.ResourceData, meta interface{}) error {
 		MpsUser:          d.Get("mpsuser").(string),
 	}
 
-	payload, err := json.Marshal(settings)
-	if err != nil {
-		return err
-	}
+	url := fmt.Sprintf("%s/open_amt", client.Endpoint)
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/open_amt", client.Endpoint), bytes.NewBuffer(payload))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("POST", url, nil, settings)
 	if err != nil {
 		return err
 	}
@@ -82,7 +69,6 @@ func resourceOpenAMTCreate(d *schema.ResourceData, meta interface{}) error {
 }
 
 func resourceOpenAMTRead(d *schema.ResourceData, meta interface{}) error {
-	// No GET endpoint provided for OpenAMT, treat as always present if ID is set
 	return nil
 }
 

@@ -11,7 +11,7 @@ import (
 func resourceEndpointAssociation() *schema.Resource {
 	return &schema.Resource{
 		Create: resourceEndpointAssociationCreate,
-		Read:   resourceEndpointAssociationRead, // no-op
+		Read:   resourceEndpointAssociationRead,   // no-op
 		Delete: resourceEndpointAssociationDelete, // no-op (optional)
 
 		Schema: map[string]*schema.Schema{

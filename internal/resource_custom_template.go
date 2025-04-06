@@ -26,23 +26,23 @@ func resourceCustomTemplate() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-			"title":                 {Type: schema.TypeString, Required: true},
-			"description":           {Type: schema.TypeString, Required: true},
-			"note":                  {Type: schema.TypeString, Required: true},
-			"platform":              {Type: schema.TypeInt, Required: true},
-			"type":                  {Type: schema.TypeInt, Required: true},
-			"logo":                  {Type: schema.TypeString, Optional: true},
-			"edge_template":         {Type: schema.TypeBool, Optional: true, Default: false},
-			"is_compose_format":     {Type: schema.TypeBool, Optional: true, Default: false},
-			"variables":             {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeMap}},
-			"file_content":          {Type: schema.TypeString, Optional: true},
-			"file_path":             {Type: schema.TypeString, Optional: true, ForceNew: true},
-			"repository_url":        {Type: schema.TypeString, Optional: true, ForceNew: true},
-			"repository_username":   {Type: schema.TypeString, Optional: true, ForceNew: true},
-			"repository_password":   {Type: schema.TypeString, Optional: true, Sensitive: true, ForceNew: true},
-			"repository_reference":  {Type: schema.TypeString, Optional: true, Default: "refs/heads/main", ForceNew: true},
-			"compose_file_path":     {Type: schema.TypeString, Optional: true, Default: "docker-compose.yml", ForceNew: true},
-			"tlsskip_verify":        {Type: schema.TypeBool, Optional: true, Default: false, ForceNew: true},
+			"title":                {Type: schema.TypeString, Required: true},
+			"description":          {Type: schema.TypeString, Required: true},
+			"note":                 {Type: schema.TypeString, Required: true},
+			"platform":             {Type: schema.TypeInt, Required: true},
+			"type":                 {Type: schema.TypeInt, Required: true},
+			"logo":                 {Type: schema.TypeString, Optional: true},
+			"edge_template":        {Type: schema.TypeBool, Optional: true, Default: false},
+			"is_compose_format":    {Type: schema.TypeBool, Optional: true, Default: false},
+			"variables":            {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeMap}},
+			"file_content":         {Type: schema.TypeString, Optional: true},
+			"file_path":            {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"repository_url":       {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"repository_username":  {Type: schema.TypeString, Optional: true, ForceNew: true},
+			"repository_password":  {Type: schema.TypeString, Optional: true, Sensitive: true, ForceNew: true},
+			"repository_reference": {Type: schema.TypeString, Optional: true, Default: "refs/heads/main", ForceNew: true},
+			"compose_file_path":    {Type: schema.TypeString, Optional: true, Default: "docker-compose.yml", ForceNew: true},
+			"tlsskip_verify":       {Type: schema.TypeBool, Optional: true, Default: false, ForceNew: true},
 		},
 	}
 }
@@ -63,16 +63,16 @@ func resourceCustomTemplateCreate(d *schema.ResourceData, meta interface{}) erro
 
 func createTemplateFromString(d *schema.ResourceData, client *APIClient, content string) error {
 	payload := map[string]interface{}{
-		"title":        d.Get("title").(string),
-		"description":  d.Get("description").(string),
-		"note":         d.Get("note").(string),
-		"platform":     d.Get("platform").(int),
-		"type":         d.Get("type").(int),
-		"logo":         d.Get("logo").(string),
-		"edgeTemplate": d.Get("edge_template").(bool),
+		"title":           d.Get("title").(string),
+		"description":     d.Get("description").(string),
+		"note":            d.Get("note").(string),
+		"platform":        d.Get("platform").(int),
+		"type":            d.Get("type").(int),
+		"logo":            d.Get("logo").(string),
+		"edgeTemplate":    d.Get("edge_template").(bool),
 		"isComposeFormat": d.Get("is_compose_format").(bool),
-		"fileContent":  content,
-		"variables":    getVariables(d),
+		"fileContent":     content,
+		"variables":       getVariables(d),
 	}
 	return postTemplateJSON(d, client, payload, "/custom_templates/create/string")
 }
@@ -124,7 +124,9 @@ func createTemplateFromFile(d *schema.ResourceData, client *APIClient, path stri
 		return fmt.Errorf("failed to create custom template from file: %s", string(data))
 	}
 
-	var result struct{ Id int `json:"Id"` }
+	var result struct {
+		Id int `json:"Id"`
+	}
 	json.NewDecoder(resp.Body).Decode(&result)
 	d.SetId(strconv.Itoa(result.Id))
 	return nil
@@ -132,21 +134,21 @@ func createTemplateFromFile(d *schema.ResourceData, client *APIClient, path stri
 
 func createTemplateFromRepository(d *schema.ResourceData, client *APIClient, repoURL string) error {
 	payload := map[string]interface{}{
-		"title":        d.Get("title").(string),
-		"description":  d.Get("description").(string),
-		"note":         d.Get("note").(string),
-		"platform":     d.Get("platform").(int),
-		"type":         d.Get("type").(int),
-		"logo":         d.Get("logo").(string),
-		"edgeTemplate": d.Get("edge_template").(bool),
-		"isComposeFormat": d.Get("is_compose_format").(bool),
-		"repositoryURL": repoURL,
-		"repositoryUsername": d.Get("repository_username").(string),
-		"repositoryPassword": d.Get("repository_password").(string),
-		"repositoryReferenceName": d.Get("repository_reference").(string),
+		"title":                       d.Get("title").(string),
+		"description":                 d.Get("description").(string),
+		"note":                        d.Get("note").(string),
+		"platform":                    d.Get("platform").(int),
+		"type":                        d.Get("type").(int),
+		"logo":                        d.Get("logo").(string),
+		"edgeTemplate":                d.Get("edge_template").(bool),
+		"isComposeFormat":             d.Get("is_compose_format").(bool),
+		"repositoryURL":               repoURL,
+		"repositoryUsername":          d.Get("repository_username").(string),
+		"repositoryPassword":          d.Get("repository_password").(string),
+		"repositoryReferenceName":     d.Get("repository_reference").(string),
 		"composeFilePathInRepository": d.Get("compose_file_path").(string),
-		"tlsskipVerify": d.Get("tlsskip_verify").(bool),
-		"variables":    getVariables(d),
+		"tlsskipVerify":               d.Get("tlsskip_verify").(bool),
+		"variables":                   getVariables(d),
 	}
 
 	return postTemplateJSON(d, client, payload, "/custom_templates/create/repository")
@@ -169,7 +171,9 @@ func postTemplateJSON(d *schema.ResourceData, client *APIClient, payload map[str
 		return fmt.Errorf("failed to create custom template: %s", string(data))
 	}
 
-	var result struct{ Id int `json:"Id"` }
+	var result struct {
+		Id int `json:"Id"`
+	}
 	json.NewDecoder(resp.Body).Decode(&result)
 	d.SetId(strconv.Itoa(result.Id))
 	return nil
@@ -222,17 +226,17 @@ func resourceCustomTemplateUpdate(d *schema.ResourceData, meta interface{}) erro
 	client := meta.(*APIClient)
 
 	payload := map[string]interface{}{
-		"title":                   d.Get("title").(string),
-		"description":             d.Get("description").(string),
-		"note":                    d.Get("note").(string),
-		"platform":                d.Get("platform").(int),
-		"type":                    d.Get("type").(int),
-		"logo":                    d.Get("logo").(string),
-		"edgeTemplate":            d.Get("edge_template").(bool),
-		"isComposeFormat":         d.Get("is_compose_format").(bool),
+		"title":                       d.Get("title").(string),
+		"description":                 d.Get("description").(string),
+		"note":                        d.Get("note").(string),
+		"platform":                    d.Get("platform").(int),
+		"type":                        d.Get("type").(int),
+		"logo":                        d.Get("logo").(string),
+		"edgeTemplate":                d.Get("edge_template").(bool),
+		"isComposeFormat":             d.Get("is_compose_format").(bool),
 		"composeFilePathInRepository": d.Get("compose_file_path").(string),
-		"tlsskipVerify":           d.Get("tlsskip_verify").(bool),
-		"variables":               getVariables(d),
+		"tlsskipVerify":               d.Get("tlsskip_verify").(bool),
+		"variables":                   getVariables(d),
 	}
 
 	isGitBased := false

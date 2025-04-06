@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -63,27 +61,18 @@ func resourceResourceControlCreate(d *schema.ResourceData, meta interface{}) err
 	client := meta.(*APIClient)
 
 	body := map[string]interface{}{
-		"resourceID":          d.Get("resource_id").(string),
-		"subResourceIDs":      d.Get("sub_resource_ids"),
-		"type":                d.Get("type").(int),
+		"resourceID":         d.Get("resource_id").(string),
+		"subResourceIDs":     d.Get("sub_resource_ids"),
+		"type":               d.Get("type").(int),
 		"administratorsOnly": d.Get("administrators_only").(bool),
 		"public":             d.Get("public").(bool),
 		"teams":              d.Get("teams"),
 		"users":              d.Get("users"),
 	}
 
-	jsonBody, _ := json.Marshal(body)
-	url := fmt.Sprintf("%s/resource_controls", client.Endpoint)
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
+	resp, err := client.DoRequest("POST", "/resource_controls", nil, body)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to create resource control: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -117,18 +106,9 @@ func resourceResourceControlUpdate(d *schema.ResourceData, meta interface{}) err
 		"users":              d.Get("users"),
 	}
 
-	jsonBody, _ := json.Marshal(body)
-	url := fmt.Sprintf("%s/resource_controls/%s", client.Endpoint, id)
-	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonBody))
+	resp, err := client.DoRequest("PUT", fmt.Sprintf("/resource_controls/%s", id), nil, body)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to update resource control: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -142,16 +122,11 @@ func resourceResourceControlUpdate(d *schema.ResourceData, meta interface{}) err
 
 func resourceResourceControlDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
-	url := fmt.Sprintf("%s/resource_controls/%s", client.Endpoint, d.Id())
-	req, err := http.NewRequest("DELETE", url, nil)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
+	id := d.Id()
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest("DELETE", fmt.Sprintf("/resource_controls/%s", id), nil, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to delete resource control: %w", err)
 	}
 	defer resp.Body.Close()
 

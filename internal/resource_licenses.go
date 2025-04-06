@@ -1,11 +1,9 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
@@ -59,24 +57,13 @@ func resourceLicensesCreate(d *schema.ResourceData, meta interface{}) error {
 		Key: licenseKey,
 	}
 
-	bodyBytes, err := json.Marshal(payload)
-	if err != nil {
-		return err
-	}
-
 	url := fmt.Sprintf("%s/licenses/add", client.Endpoint)
 	if force {
 		url += "?force=true"
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(bodyBytes))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
+	var result LicenseResponse
+	resp, err := client.DoRequest("POST", url, nil, payload)
 	if err != nil {
 		return err
 	}
@@ -87,11 +74,14 @@ func resourceLicensesCreate(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("failed to attach license: %s", string(body))
 	}
 
-	var response LicenseResponse
-	_ = json.NewDecoder(resp.Body).Decode(&response)
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return fmt.Errorf("failed to parse license response: %w", err)
+	}
 
-	_ = d.Set("conflicting_keys", response.ConflictingKeys)
-	
+	if err := d.Set("conflicting_keys", result.ConflictingKeys); err != nil {
+		return fmt.Errorf("failed to set conflicting_keys: %w", err)
+	}
+
 	d.SetId(licenseKey)
 	return nil
 }

@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -39,16 +38,16 @@ func resourceDockerNetworkCreate(d *schema.ResourceData, meta interface{}) error
 	endpointID := d.Get("endpoint_id").(int)
 
 	payload := map[string]interface{}{
-		"Name":        d.Get("name").(string),
-		"Driver":      d.Get("driver").(string),
-		"Internal":    d.Get("internal").(bool),
-		"Attachable":  d.Get("attachable").(bool),
-		"Ingress":     d.Get("ingress").(bool),
-		"ConfigOnly":  d.Get("config_only").(bool),
-		"EnableIPv4":  d.Get("enable_ipv4").(bool),
-		"EnableIPv6":  d.Get("enable_ipv6").(bool),
-		"Options":     d.Get("options").(map[string]interface{}),
-		"Labels":      d.Get("labels").(map[string]interface{}),
+		"Name":       d.Get("name").(string),
+		"Driver":     d.Get("driver").(string),
+		"Internal":   d.Get("internal").(bool),
+		"Attachable": d.Get("attachable").(bool),
+		"Ingress":    d.Get("ingress").(bool),
+		"ConfigOnly": d.Get("config_only").(bool),
+		"EnableIPv4": d.Get("enable_ipv4").(bool),
+		"EnableIPv6": d.Get("enable_ipv6").(bool),
+		"Options":    d.Get("options").(map[string]interface{}),
+		"Labels":     d.Get("labels").(map[string]interface{}),
 	}
 
 	if v, ok := d.GetOk("scope"); ok {
@@ -58,27 +57,26 @@ func resourceDockerNetworkCreate(d *schema.ResourceData, meta interface{}) error
 		payload["ConfigFrom"] = map[string]string{"Network": v.(string)}
 	}
 
-	jsonBody, _ := json.Marshal(payload)
-	url := fmt.Sprintf("%s/endpoints/%d/docker/networks/create", client.Endpoint, endpointID)
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(jsonBody))
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
+	var response struct {
+		ID string `json:"Id"`
+	}
 
-	resp, err := http.DefaultClient.Do(req)
+	path := fmt.Sprintf("/endpoints/%d/docker/networks/create", endpointID)
+	resp, err := client.DoRequest(http.MethodPost, path, nil, payload)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create docker network: %w", err)
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != 201 && resp.StatusCode != 200 {
+	if resp.StatusCode != 200 && resp.StatusCode != 201 {
 		body, _ := io.ReadAll(resp.Body)
 		return fmt.Errorf("failed to create docker network: %s", string(body))
 	}
 
-	var response struct {
-		ID string `json:"Id"`
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
+		return err
 	}
-	json.NewDecoder(resp.Body).Decode(&response)
+
 	d.SetId(response.ID)
 	return nil
 }
@@ -92,13 +90,10 @@ func resourceDockerNetworkDelete(d *schema.ResourceData, meta interface{}) error
 	endpointID := d.Get("endpoint_id").(int)
 	id := d.Id()
 
-	url := fmt.Sprintf("%s/endpoints/%d/docker/networks/%s", client.Endpoint, endpointID, id)
-	req, _ := http.NewRequest("DELETE", url, nil)
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	path := fmt.Sprintf("/endpoints/%d/docker/networks/%s", endpointID, id)
+	resp, err := client.DoRequest(http.MethodDelete, path, nil, nil)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to delete docker network: %w", err)
 	}
 	defer resp.Body.Close()
 

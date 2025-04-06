@@ -22,12 +22,12 @@ func resourceKubernetesDeleteObject() *schema.Resource {
 			"environment_id": {
 				Type:     schema.TypeInt,
 				Required: true,
-				ForceNew:    true,
+				ForceNew: true,
 			},
 			"resource_type": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew:    true,
+				ForceNew: true,
 				ValidateFunc: validation.StringInSlice([]string{
 					"cron_jobs", "ingresses", "jobs", "role_bindings",
 					"roles", "service_accounts", "services", "cluster_role_bindings",
@@ -37,12 +37,12 @@ func resourceKubernetesDeleteObject() *schema.Resource {
 			"namespace": {
 				Type:     schema.TypeString,
 				Required: true,
-				ForceNew:    true,
+				ForceNew: true,
 			},
 			"names": {
 				Type:     schema.TypeList,
 				Required: true,
-				ForceNew:    true,
+				ForceNew: true,
 				Elem:     &schema.Schema{Type: schema.TypeString},
 			},
 		},

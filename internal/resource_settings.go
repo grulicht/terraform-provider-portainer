@@ -11,21 +11,21 @@ import (
 )
 
 type SettingsPayload struct {
-	EdgePortainerURL          string                 `json:"EdgePortainerURL,omitempty"`
-	AuthenticationMethod      int                    `json:"authenticationMethod,omitempty"`
-	EnableTelemetry           bool                   `json:"enableTelemetry,omitempty"`
-	LogoURL                   string                 `json:"logoURL,omitempty"`
-	SnapshotInterval          string                 `json:"snapshotInterval,omitempty"`
-	TemplatesURL              string                 `json:"templatesURL,omitempty"`
-	EnableEdgeComputeFeatures bool                   `json:"enableEdgeComputeFeatures,omitempty"`
-	EnforceEdgeID             bool                   `json:"enforceEdgeID,omitempty"`
-	UserSessionTimeout        string                 `json:"userSessionTimeout,omitempty"`
-	KubeconfigExpiry          string                 `json:"kubeconfigExpiry,omitempty"`
-	KubectlShellImage         string                 `json:"kubectlShellImage,omitempty"`
-	HelmRepositoryURL         string                 `json:"helmRepositoryURL,omitempty"`
-	InternalAuthSettings      *InternalAuthSettings  `json:"internalAuthSettings,omitempty"`
-	OAuthSettings             *OAuthSettings         `json:"oauthSettings,omitempty"`
-	LDAPSettings              *LDAPSettings          `json:"ldapsettings,omitempty"`
+	EdgePortainerURL          string                `json:"EdgePortainerURL,omitempty"`
+	AuthenticationMethod      int                   `json:"authenticationMethod,omitempty"`
+	EnableTelemetry           bool                  `json:"enableTelemetry,omitempty"`
+	LogoURL                   string                `json:"logoURL,omitempty"`
+	SnapshotInterval          string                `json:"snapshotInterval,omitempty"`
+	TemplatesURL              string                `json:"templatesURL,omitempty"`
+	EnableEdgeComputeFeatures bool                  `json:"enableEdgeComputeFeatures,omitempty"`
+	EnforceEdgeID             bool                  `json:"enforceEdgeID,omitempty"`
+	UserSessionTimeout        string                `json:"userSessionTimeout,omitempty"`
+	KubeconfigExpiry          string                `json:"kubeconfigExpiry,omitempty"`
+	KubectlShellImage         string                `json:"kubectlShellImage,omitempty"`
+	HelmRepositoryURL         string                `json:"helmRepositoryURL,omitempty"`
+	InternalAuthSettings      *InternalAuthSettings `json:"internalAuthSettings,omitempty"`
+	OAuthSettings             *OAuthSettings        `json:"oauthSettings,omitempty"`
+	LDAPSettings              *LDAPSettings         `json:"ldapsettings,omitempty"`
 }
 
 type InternalAuthSettings struct {
@@ -49,12 +49,12 @@ type OAuthSettings struct {
 }
 
 type LDAPSettings struct {
-	AnonymousMode     bool   `json:"AnonymousMode,omitempty"`
-	AutoCreateUsers   bool   `json:"AutoCreateUsers,omitempty"`
-	Password          string `json:"Password,omitempty"`
-	ReaderDN          string `json:"ReaderDN,omitempty"`
-	StartTLS          bool   `json:"StartTLS,omitempty"`
-	URL               string `json:"URL,omitempty"`
+	AnonymousMode   bool   `json:"AnonymousMode,omitempty"`
+	AutoCreateUsers bool   `json:"AutoCreateUsers,omitempty"`
+	Password        string `json:"Password,omitempty"`
+	ReaderDN        string `json:"ReaderDN,omitempty"`
+	StartTLS        bool   `json:"StartTLS,omitempty"`
+	URL             string `json:"URL,omitempty"`
 }
 
 func resourceSettings() *schema.Resource {
@@ -64,20 +64,20 @@ func resourceSettings() *schema.Resource {
 		Update: resourceSettingsApply,
 		Delete: resourceSettingsDelete,
 		Schema: map[string]*schema.Schema{
-			"edge_portainer_url": {Type: schema.TypeString, Optional: true},
-			"authentication_method": {Type: schema.TypeInt, Optional: true},
-			"enable_telemetry": {Type: schema.TypeBool, Optional: true},
-			"logo_url": {Type: schema.TypeString, Optional: true},
-			"snapshot_interval": {Type: schema.TypeString, Optional: true},
-			"templates_url": {Type: schema.TypeString, Optional: true},
+			"edge_portainer_url":           {Type: schema.TypeString, Optional: true},
+			"authentication_method":        {Type: schema.TypeInt, Optional: true},
+			"enable_telemetry":             {Type: schema.TypeBool, Optional: true},
+			"logo_url":                     {Type: schema.TypeString, Optional: true},
+			"snapshot_interval":            {Type: schema.TypeString, Optional: true},
+			"templates_url":                {Type: schema.TypeString, Optional: true},
 			"enable_edge_compute_features": {Type: schema.TypeBool, Optional: true},
-			"enforce_edge_id": {Type: schema.TypeBool, Optional: true},
-			"user_session_timeout": {Type: schema.TypeString, Optional: true},
-			"kubeconfig_expiry": {Type: schema.TypeString, Optional: true},
-			"kubectl_shell_image": {Type: schema.TypeString, Optional: true},
-			"helm_repository_url": {Type: schema.TypeString, Optional: true},
+			"enforce_edge_id":              {Type: schema.TypeBool, Optional: true},
+			"user_session_timeout":         {Type: schema.TypeString, Optional: true},
+			"kubeconfig_expiry":            {Type: schema.TypeString, Optional: true},
+			"kubectl_shell_image":          {Type: schema.TypeString, Optional: true},
+			"helm_repository_url":          {Type: schema.TypeString, Optional: true},
 			"internal_auth_settings": {
-				Type: schema.TypeList,
+				Type:     schema.TypeList,
 				Optional: true,
 				MaxItems: 1,
 				Elem: &schema.Resource{
@@ -87,39 +87,39 @@ func resourceSettings() *schema.Resource {
 				},
 			},
 			"oauth_settings": {
-				Type: schema.TypeList,
+				Type:     schema.TypeList,
 				Optional: true,
 				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"access_token_uri": {Type: schema.TypeString, Optional: true},
-						"auth_style": {Type: schema.TypeInt, Optional: true},
-						"authorization_uri": {Type: schema.TypeString, Optional: true},
-						"client_id": {Type: schema.TypeString, Optional: true},
-						"client_secret": {Type: schema.TypeString, Optional: true, Sensitive: true},
-						"default_team_id": {Type: schema.TypeInt, Optional: true},
-						"logout_uri": {Type: schema.TypeString, Optional: true},
+						"access_token_uri":        {Type: schema.TypeString, Optional: true},
+						"auth_style":              {Type: schema.TypeInt, Optional: true},
+						"authorization_uri":       {Type: schema.TypeString, Optional: true},
+						"client_id":               {Type: schema.TypeString, Optional: true},
+						"client_secret":           {Type: schema.TypeString, Optional: true, Sensitive: true},
+						"default_team_id":         {Type: schema.TypeInt, Optional: true},
+						"logout_uri":              {Type: schema.TypeString, Optional: true},
 						"oauth_auto_create_users": {Type: schema.TypeBool, Optional: true},
-						"redirect_uri": {Type: schema.TypeString, Optional: true},
-						"resource_uri": {Type: schema.TypeString, Optional: true},
-						"sso": {Type: schema.TypeBool, Optional: true},
-						"scopes": {Type: schema.TypeString, Optional: true},
-						"user_identifier": {Type: schema.TypeString, Optional: true},
+						"redirect_uri":            {Type: schema.TypeString, Optional: true},
+						"resource_uri":            {Type: schema.TypeString, Optional: true},
+						"sso":                     {Type: schema.TypeBool, Optional: true},
+						"scopes":                  {Type: schema.TypeString, Optional: true},
+						"user_identifier":         {Type: schema.TypeString, Optional: true},
 					},
 				},
 			},
 			"ldap_settings": {
-				Type: schema.TypeList,
+				Type:     schema.TypeList,
 				Optional: true,
 				MaxItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
-						"anonymous_mode": {Type: schema.TypeBool, Optional: true},
+						"anonymous_mode":    {Type: schema.TypeBool, Optional: true},
 						"auto_create_users": {Type: schema.TypeBool, Optional: true},
-						"password": {Type: schema.TypeString, Optional: true, Sensitive: true},
-						"reader_dn": {Type: schema.TypeString, Optional: true},
-						"start_tls": {Type: schema.TypeBool, Optional: true},
-						"url": {Type: schema.TypeString, Optional: true},
+						"password":          {Type: schema.TypeString, Optional: true, Sensitive: true},
+						"reader_dn":         {Type: schema.TypeString, Optional: true},
+						"start_tls":         {Type: schema.TypeBool, Optional: true},
+						"url":               {Type: schema.TypeString, Optional: true},
 					},
 				},
 			},

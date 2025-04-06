@@ -41,15 +41,12 @@ func resourceDockerImageCreate(d *schema.ResourceData, meta interface{}) error {
 
 	params := url.Values{}
 	params.Add("fromImage", image)
-	fullURL := fmt.Sprintf("%s/endpoints/%d/docker/images/create?%s", client.Endpoint, endpointID, params.Encode())
+	path := fmt.Sprintf("/endpoints/%d/docker/images/create?%s", endpointID, params.Encode())
 
-	req, err := http.NewRequest("POST", fullURL, strings.NewReader(""))
-	if err != nil {
-		return err
+	headers := map[string]string{
+		"Content-Type":   "application/json",
+		"Content-Length": "0",
 	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Content-Length", "0")
 
 	if auth != "" {
 		split := strings.SplitN(auth, ":", 2)
@@ -64,12 +61,12 @@ func resourceDockerImageCreate(d *schema.ResourceData, meta interface{}) error {
 		}
 		jsonData, _ := json.Marshal(payload)
 		encoded := base64.StdEncoding.EncodeToString(jsonData)
-		req.Header.Set("X-Registry-Auth", encoded)
+		headers["X-Registry-Auth"] = encoded
 	} else {
-		req.Header.Set("X-Registry-Auth", base64.StdEncoding.EncodeToString([]byte(`{}`)))
+		headers["X-Registry-Auth"] = base64.StdEncoding.EncodeToString([]byte(`{}`))
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.DoRequest(http.MethodPost, path, headers, nil)
 	if err != nil {
 		return err
 	}
@@ -95,16 +92,8 @@ func resourceDockerImageDelete(d *schema.ResourceData, meta interface{}) error {
 	endpointID := d.Get("endpoint_id").(int)
 	image := d.Get("image").(string)
 
-	encodedImage := url.PathEscape(image)
-	deleteURL := fmt.Sprintf("%s/endpoints/%d/docker/images/%s", client.Endpoint, endpointID, encodedImage)
-
-	req, err := http.NewRequest("DELETE", deleteURL, nil)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
+	path := fmt.Sprintf("/endpoints/%d/docker/images/%s", endpointID, url.PathEscape(image))
+	resp, err := client.DoRequest(http.MethodDelete, path, nil, nil)
 	if err != nil {
 		return err
 	}

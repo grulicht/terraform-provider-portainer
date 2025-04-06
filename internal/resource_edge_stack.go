@@ -99,7 +99,7 @@ func resourceEdgeStackCreate(d *schema.ResourceData, meta interface{}) error {
 	// Method: stackFileContent (string)
 	if content, ok := d.GetOk("stack_file_content"); ok {
 		payload := map[string]interface{}{
-			"name":                   name,
+			"name":                  name,
 			"deploymentType":        deployType,
 			"edgeGroups":            edgeGroups,
 			"stackFileContent":      content.(string),
@@ -161,16 +161,16 @@ func resourceEdgeStackCreate(d *schema.ResourceData, meta interface{}) error {
 	if repoURLRaw, ok := d.GetOk("repository_url"); ok {
 		repoURL := repoURLRaw.(string)
 		payload := map[string]interface{}{
-			"name":                   name,
-			"deploymentType":        deployType,
-			"edgeGroups":            edgeGroups,
-			"repositoryURL":         repoURL,
-			"repositoryUsername":    d.Get("repository_username").(string),
-			"repositoryPassword":    d.Get("repository_password").(string),
+			"name":                    name,
+			"deploymentType":          deployType,
+			"edgeGroups":              edgeGroups,
+			"repositoryURL":           repoURL,
+			"repositoryUsername":      d.Get("repository_username").(string),
+			"repositoryPassword":      d.Get("repository_password").(string),
 			"repositoryReferenceName": d.Get("repository_reference_name").(string),
-			"filePathInRepository":  d.Get("file_path_in_repository").(string),
-			"useManifestNamespaces": useManifest,
-			"registries":            registries,
+			"filePathInRepository":    d.Get("file_path_in_repository").(string),
+			"useManifestNamespaces":   useManifest,
+			"registries":              registries,
 		}
 		return createEdgeStackFromJSON(client, d, payload, "/edge_stacks/create/repository")
 	}
@@ -182,7 +182,7 @@ func resourceEdgeStackUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
 	payload := map[string]interface{}{
-		"name":                   d.Get("name").(string),
+		"name":                  d.Get("name").(string),
 		"deploymentType":        d.Get("deployment_type").(int),
 		"edgeGroups":            toIntSlice(d.Get("edge_groups").([]interface{})),
 		"updateVersion":         true,

@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -35,10 +34,10 @@ func resourceCloudCredentials() *schema.Resource {
 				Description: "Human-readable name of the credentials",
 			},
 			"credentials": {
-				Type:     schema.TypeMap,
-				Required: true,
-				ForceNew: true,
-				Elem:     &schema.Schema{Type: schema.TypeString},
+				Type:        schema.TypeMap,
+				Required:    true,
+				ForceNew:    true,
+				Elem:        &schema.Schema{Type: schema.TypeString},
 				Description: "JSON-encoded credentials for the provider",
 			},
 		},
@@ -49,26 +48,18 @@ func resourceCloudCredentialsCreate(d *schema.ResourceData, meta interface{}) er
 	client := meta.(*APIClient)
 
 	payload := CloudCredentialPayload{
-		Provider:    d.Get("cloud_provider").(string), // use renamed field here
+		Provider:    d.Get("cloud_provider").(string),
 		Name:        d.Get("name").(string),
 		Credentials: mapStringInterface(d.Get("credentials").(map[string]interface{})),
 	}
 
-	jsonPayload, err := json.Marshal(payload)
-	if err != nil {
-		return err
+	var result struct {
+		ID int `json:"id"`
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/cloud/credentials", client.Endpoint), bytes.NewBuffer(jsonPayload))
+	resp, err := client.DoRequest(http.MethodPost, "/cloud/credentials", nil, payload)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to create cloud credential: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -76,9 +67,6 @@ func resourceCloudCredentialsCreate(d *schema.ResourceData, meta interface{}) er
 		return fmt.Errorf("failed to create cloud credential: HTTP %d", resp.StatusCode)
 	}
 
-	var result struct {
-		ID int `json:"id"`
-	}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return err
 	}
@@ -89,17 +77,11 @@ func resourceCloudCredentialsCreate(d *schema.ResourceData, meta interface{}) er
 
 func resourceCloudCredentialsDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
-	url := fmt.Sprintf("%s/cloud/credentials/%s", client.Endpoint, d.Id())
 
-	req, err := http.NewRequest("DELETE", url, nil)
+	path := fmt.Sprintf("/cloud/credentials/%s", d.Id())
+	resp, err := client.DoRequest(http.MethodDelete, path, nil, nil)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to delete cloud credential: %w", err)
 	}
 	defer resp.Body.Close()
 

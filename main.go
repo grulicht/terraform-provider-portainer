@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
-	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 	"github.com/grulicht/terraform-provider-portainer/internal"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
 
 func main() {

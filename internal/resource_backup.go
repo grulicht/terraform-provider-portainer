@@ -1,11 +1,8 @@
 package internal
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -27,10 +24,10 @@ func resourceBackup() *schema.Resource {
 				ForceNew:  true,
 			},
 			"output_path": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:        schema.TypeString,
+				Required:    true,
 				Description: "Path on local disk where the backup .tar.gz should be saved",
-				ForceNew: true,
+				ForceNew:    true,
 			},
 		},
 	}
@@ -44,18 +41,10 @@ func resourceBackupCreate(d *schema.ResourceData, meta interface{}) error {
 	body := map[string]interface{}{
 		"password": password,
 	}
-	jsonBody, _ := json.Marshal(body)
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/backup", client.Endpoint), bytes.NewBuffer(jsonBody))
+	resp, err := client.DoRequest("POST", "/backup", nil, body)
 	if err != nil {
-		return err
-	}
-	req.Header.Set("X-API-Key", client.APIKey)
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return err
+		return fmt.Errorf("failed to create backup: %w", err)
 	}
 	defer resp.Body.Close()
 
@@ -76,7 +65,6 @@ func resourceBackupCreate(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("failed to write backup file: %w", err)
 	}
 
-	// Use timestamp as fake ID (or something static)
 	d.SetId(strconv.FormatInt(makeTimestamp(), 10))
 	return nil
 }
