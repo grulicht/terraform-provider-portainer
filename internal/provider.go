@@ -80,6 +80,8 @@ func Provider() *schema.Provider {
 			"portainer_kubernetes_namespace_system":             resourceKubernetesNamespaceSystem(),
 			"portainer_kubernetes_delete_object":                resourceKubernetesDeleteObject(),
 			"portainer_resource_control":                        resourceResourceControl(),
+			"portainer_docker_secret":                           resourceDockerSecret(),
+			"portainer_docker_config":                           resourceDockerConfig(),
 		},
 		ConfigureContextFunc: configureProvider,
 	}

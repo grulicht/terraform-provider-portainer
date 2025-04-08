@@ -82,7 +82,7 @@ func resourceDockerNetworkCreate(d *schema.ResourceData, meta interface{}) error
 }
 
 func resourceDockerNetworkRead(d *schema.ResourceData, meta interface{}) error {
-	return nil // Optional to implement; Portainer doesn't expose detailed inspect API
+	return nil
 }
 
 func resourceDockerNetworkDelete(d *schema.ResourceData, meta interface{}) error {
