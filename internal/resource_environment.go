@@ -29,8 +29,8 @@ func resourceEnvironment() *schema.Resource {
 				Required: true,
 			},
 			"type": {
-				Type:     schema.TypeInt,
-				Required: true,
+				Type:        schema.TypeInt,
+				Required:    true,
 				Description: "Environment type: 1 = Docker, 2 = Agent, 3 = Azure, 4 = Edge Agent, 5 = Kubernetes",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
 					t := val.(int)
@@ -41,15 +41,15 @@ func resourceEnvironment() *schema.Resource {
 				},
 			},
 			"group_id": {
-				Type:     schema.TypeInt,
-				Optional: true,
-				Default:  1,
+				Type:        schema.TypeInt,
+				Optional:    true,
+				Default:     1,
 				Description: "ID of the Portainer endpoint group. Default is 1 (Unassigned).",
 			},
 			"tag_ids": {
-				Type:     schema.TypeList,
-				Optional: true,
-				Elem:     &schema.Schema{Type: schema.TypeInt},
+				Type:        schema.TypeList,
+				Optional:    true,
+				Elem:        &schema.Schema{Type: schema.TypeInt},
 				Description: "List of tag IDs to assign to the environment.",
 			},
 		},
@@ -169,11 +169,11 @@ func resourceEnvironmentUpdate(d *schema.ResourceData, meta interface{}) error {
 	id := d.Id()
 
 	payload := map[string]interface{}{
-		"name":     d.Get("name").(string),
-		"url":      d.Get("environment_address").(string),
+		"name":      d.Get("name").(string),
+		"url":       d.Get("environment_address").(string),
 		"publicURL": d.Get("environment_address").(string),
-		"groupID":  d.Get("group_id").(int),
-		"tagIDs":   d.Get("tag_ids").([]interface{}),
+		"groupID":   d.Get("group_id").(int),
+		"tagIDs":    d.Get("tag_ids").([]interface{}),
 	}
 
 	jsonBody, err := json.Marshal(payload)
