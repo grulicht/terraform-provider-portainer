@@ -32,15 +32,13 @@ jobs:
           docker network connect portainer_net portainer
           docker network connect portainer_net portainer_agent
 
-          IP_ADDRESSES=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' portainer_agent)
+          IP_ADDRESSES=$(docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{println $v.IPAddress}}{{end}}' portainer_agent)
 
-          echo "$IP_ADDRESSES"
-
-          AGENT_IP=$(echo "$IP_ADDRESSES" | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' | sed -n '2p')
+          AGENT_IP=$(echo "$IP_ADDRESSES" | sed -n '2p')
 
           if [ -z "$AGENT_IP" ]; then
             echo "⚠️ Not found second IP address. Use first."
-            AGENT_IP=$(echo "$IP_ADDRESSES" | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -n 1)
+            AGENT_IP=$(echo "$IP_ADDRESSES" | head -n 1)
           fi
 
           echo "💡 Portainer Agent IP: $AGENT_IP"
