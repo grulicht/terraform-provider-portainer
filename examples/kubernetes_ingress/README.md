@@ -11,7 +11,7 @@
 
 | Name | Type |
 |------|------|
-| [portainer_kubernetes_namespace_ingresses.example](https://registry.terraform.io/providers/grulicht/portainer/latest/docs/resources/kubernetes_namespace_ingresses) | resource |
+| [portainer_kubernetes_ingresses.example](https://registry.terraform.io/providers/grulicht/portainer/latest/docs/resources/kubernetes_ingresses) | resource |
 
 ## Inputs
 

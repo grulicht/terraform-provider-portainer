@@ -82,17 +82,27 @@ $ export PORTAINER_SKIP_SSL_VERIFY=true
 | `portainer_endpoint_association`| ![Done](https://img.shields.io/badge/status-done-brightgreen)      |
 | `portainer_webhook`        | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_webhook_execute`| ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
+| `portainer_resource_control`| ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 | `portainer_licenses`       | ![Done](https://img.shields.io/badge/status-done-brightgreen)         |
 | `portainer_cloud_credentials`| ![Done](https://img.shields.io/badge/status-done-brightgreen)       |
 | `portainer_kubernetes_delete_object`                  | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 | `portainer_kubernetes_helm`                           | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 | `portainer_kubernetes_ingresscontrollers`             | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 | `portainer_kubernetes_namespace_ingresscontrollers`   | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
-| `portainer_kubernetes_namespace_ingresses`            | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
-| `portainer_kubernetes_namespace_services`             | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 | `portainer_kubernetes_namespace_system`               | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 | `portainer_kubernetes_namespace`                      | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
-| `portainer_resource_control`                      | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_cronjob`                        | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_job`                            | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_service_account`                | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_configmaps`                     | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_secret`                         | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_service`                        | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_role`                           | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_rolebinding`                    | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_clusterrole`                    | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_clusterrolebinding`             | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_application`                    | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_ingress`                        | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 
 ---
 

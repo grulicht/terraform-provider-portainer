@@ -2,7 +2,10 @@ module github.com/grulicht/terraform-provider-portainer
 
 go 1.22.2
 
-require github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.1
+require (
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.36.1
+	gopkg.in/yaml.v3 v3.0.1
+)
 
 require (
 	github.com/agext/levenshtein v1.2.2 // indirect
