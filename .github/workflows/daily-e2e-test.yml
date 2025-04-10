@@ -13,6 +13,9 @@ jobs:
       - name: ⬇️ Checkout code
         uses: actions/checkout@v4
 
+      - name: 🐳 Start Portainer via Docker Compose
+        run: make up
+
       - name: 🛰️ Start Portainer Agent
         run: |
           docker run -d \
@@ -41,10 +44,6 @@ jobs:
           echo "💡 Portainer Agent IP: $AGENT_IP"
 
           echo "portainer_environment_address = \"tcp://$AGENT_IP:9001\"" > e2e-tests/environment/terraform.tfvars
-
-
-      - name: 🐳 Start Portainer via Docker Compose
-        run: make up
 
       - name: ⬇️ Install Terraform
         uses: hashicorp/setup-terraform@v3
