@@ -13,6 +13,36 @@ jobs:
       - name: ⬇️ Checkout code
         uses: actions/checkout@v4
 
+      - name: 🛰️ Start Portainer Agent
+        run: |
+          docker run -d \
+            -p 9001:9001 \
+            --name portainer_agent \
+            --restart=always \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v /var/lib/docker/volumes:/var/lib/docker/volumes \
+            -v /:/host \
+            portainer/agent
+
+          docker network create portainer_net
+
+          docker network connect portainer_net portainer
+          docker network connect portainer_net portainer_agent
+
+          IP_ADDRESSES=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' portainer_agent)
+
+          AGENT_IP=$(echo "$IP_ADDRESSES" | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' | sed -n '2p')
+
+          if [ -z "$AGENT_IP" ]; then
+            echo "⚠️ Not found second IP address. Use first."
+            AGENT_IP=$(echo "$IP_ADDRESSES" | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -n 1)
+          fi
+
+          echo "💡 Portainer Agent IP: $AGENT_IP"
+
+          echo "portainer_environment_address = \"tcp://$AGENT_IP:9001\"" > e2e-tests/environment/terraform.tfvars
+
+
       - name: 🐳 Start Portainer via Docker Compose
         run: make up
 
@@ -27,7 +57,7 @@ jobs:
       - name: 🧪 Run Terraform E2E tests
         run: |
           APPLY_ONLY_DIRS=("stack" "webhook" "container_exec" "backup" "auth" "settings" "open_amt" "endpoint_snapshot" "endpoint_settings" "ssl")
-          FULL_CYCLE_DIRS=("custom_template" "docker_image" "docker_network" "docker_volume" "stack" "endpoint_group" "tag" "user-team-teammembership" "registry")
+          FULL_CYCLE_DIRS=("environment" "custom_template" "docker_image" "docker_network" "docker_volume" "stack" "endpoint_group" "tag" "user-team-teammembership" "registry")
 
           for dir in "${FULL_CYCLE_DIRS[@]}"; do
             if [ -d "e2e-tests/$dir" ]; then
