@@ -1,4 +1,4 @@
-resource "portainer_kubernetes_namespace_ingresses" "example" {
+resource "portainer_kubernetes_ingresses" "example" {
   environment_id = var.environment_id
   namespace      = var.namespace
   name           = var.ingress_name
