@@ -66,6 +66,7 @@ jobs:
               terraform fmt -check
               terraform validate
               terraform apply -auto-approve
+              sleep 5
               terraform destroy -auto-approve
               cd -
             fi
