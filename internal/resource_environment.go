@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+	"net/http"
 	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
@@ -28,8 +29,8 @@ func resourceEnvironment() *schema.Resource {
 				Required: true,
 			},
 			"type": {
-				Type:        schema.TypeInt,
-				Required:    true,
+				Type:     schema.TypeInt,
+				Required: true,
 				Description: "Environment type: 1 = Docker, 2 = Agent, 3 = Azure, 4 = Edge Agent, 5 = Kubernetes",
 				ValidateFunc: func(val interface{}, key string) (warns []string, errs []error) {
 					t := val.(int)
@@ -40,15 +41,15 @@ func resourceEnvironment() *schema.Resource {
 				},
 			},
 			"group_id": {
-				Type:        schema.TypeInt,
-				Optional:    true,
-				Default:     1,
+				Type:     schema.TypeInt,
+				Optional: true,
+				Default:  1,
 				Description: "ID of the Portainer endpoint group. Default is 1 (Unassigned).",
 			},
 			"tag_ids": {
-				Type:        schema.TypeList,
-				Optional:    true,
-				Elem:        &schema.Schema{Type: schema.TypeInt},
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem:     &schema.Schema{Type: schema.TypeInt},
 				Description: "List of tag IDs to assign to the environment.",
 			},
 		},
@@ -58,8 +59,8 @@ func resourceEnvironment() *schema.Resource {
 func resourceEnvironmentCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	var body bytes.Buffer
-	writer := multipart.NewWriter(&body)
+	var requestBody bytes.Buffer
+	writer := multipart.NewWriter(&requestBody)
 
 	_ = writer.WriteField("Name", d.Get("name").(string))
 	_ = writer.WriteField("URL", d.Get("environment_address").(string))
@@ -85,17 +86,29 @@ func resourceEnvironmentCreate(d *schema.ResourceData, meta interface{}) error {
 
 	writer.Close()
 
-	headers := map[string]string{
-		"Content-Type": writer.FormDataContentType(),
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/endpoints", client.Endpoint), &requestBody)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to create environment: %s", string(data))
 	}
 
 	var result struct {
 		ID int `json:"Id"`
 	}
-
-	url := fmt.Sprintf("%s/endpoints", client.Endpoint)
-	if err := client.DoMultipartRequest("POST", url, &body, headers, &result); err != nil {
-		return fmt.Errorf("failed to create environment: %w", err)
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return err
 	}
 
 	d.SetId(strconv.Itoa(result.ID))
@@ -105,18 +118,13 @@ func resourceEnvironmentCreate(d *schema.ResourceData, meta interface{}) error {
 func resourceEnvironmentRead(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	url := fmt.Sprintf("%s/endpoints/%s", client.Endpoint, d.Id())
-
-	var env struct {
-		Name      string `json:"Name"`
-		Type      int    `json:"Type"`
-		URL       string `json:"URL"`
-		PublicURL string `json:"PublicURL"`
-		GroupID   int    `json:"GroupId"`
-		TagIds    []int  `json:"TagIds"`
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/endpoints/%s", client.Endpoint, d.Id()), nil)
+	if err != nil {
+		return err
 	}
+	req.Header.Set("X-API-Key", client.APIKey)
 
-	resp, err := client.DoRequest("GET", url, nil, nil)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
@@ -129,6 +137,14 @@ func resourceEnvironmentRead(d *schema.ResourceData, meta interface{}) error {
 		return fmt.Errorf("failed to read environment")
 	}
 
+	var env struct {
+		Name      string `json:"Name"`
+		Type      int    `json:"Type"`
+		URL       string `json:"URL"`
+		PublicURL string `json:"PublicURL"`
+		GroupID   int    `json:"GroupId"`
+		TagIds    []int  `json:"TagIds"`
+	}
 	if err := json.NewDecoder(resp.Body).Decode(&env); err != nil {
 		return err
 	}
@@ -151,25 +167,36 @@ func resourceEnvironmentUpdate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
 	id := d.Id()
-	url := fmt.Sprintf("%s/endpoints/%s", client.Endpoint, id)
 
 	payload := map[string]interface{}{
-		"name":      d.Get("name").(string),
-		"url":       d.Get("environment_address").(string),
+		"name":     d.Get("name").(string),
+		"url":      d.Get("environment_address").(string),
 		"publicURL": d.Get("environment_address").(string),
-		"groupID":   d.Get("group_id").(int),
-		"tagIDs":    d.Get("tag_ids").([]interface{}),
+		"groupID":  d.Get("group_id").(int),
+		"tagIDs":   d.Get("tag_ids").([]interface{}),
 	}
 
-	resp, err := client.DoRequest("PUT", url, nil, payload)
+	jsonBody, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/endpoints/%s", client.Endpoint, id), bytes.NewBuffer(jsonBody))
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		body, _ := io.ReadAll(resp.Body)
-		return fmt.Errorf("failed to update environment: %s", string(body))
+		data, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("failed to update environment: %s", string(data))
 	}
 
 	return resourceEnvironmentRead(d, meta)
@@ -178,9 +205,13 @@ func resourceEnvironmentUpdate(d *schema.ResourceData, meta interface{}) error {
 func resourceEnvironmentDelete(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*APIClient)
 
-	url := fmt.Sprintf("%s/endpoints/%s", client.Endpoint, d.Id())
+	req, err := http.NewRequest("DELETE", fmt.Sprintf("%s/endpoints/%s", client.Endpoint, d.Id()), nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("X-API-Key", client.APIKey)
 
-	resp, err := client.DoRequest("DELETE", url, nil, nil)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
