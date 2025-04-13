@@ -23,6 +23,6 @@
 | <a name="input_helm_release_name"></a> [helm\_release\_name](#input\_helm\_release\_name) | The name of the Helm release | `string` | n/a | yes |
 | <a name="input_helm_repo"></a> [helm\_repo](#input\_helm\_repo) | The URL of the Helm chart repository | `string` | n/a | yes |
 | <a name="input_helm_values"></a> [helm\_values](#input\_helm\_values) | Optional Helm chart values provided as a raw YAML string | `string` | `""` | no |
-| <a name="input_portainer_api_key"></a> [portainer\_api\_key](#input\_portainer\_api\_key) | Default Portainer Admin API Key | `string` | `"ptr_xrP7XWqfZEOoaCJRu5c8qKaWuDtVc2Zb07Q5g22YpS8="` | no |
-| <a name="input_portainer_url"></a> [portainer\_url](#input\_portainer\_url) | Default Portainer URL | `string` | `"http://localhost:9000"` | no |
+| <a name="input_portainer_api_key"></a> [portainer\_api\_key](#input\_portainer\_api\_key) | Default Portainer Admin API Key | `string` | n/a | yes |
+| <a name="input_portainer_url"></a> [portainer\_url](#input\_portainer\_url) | Default Portainer URL | `string` | n/a | yes |
 <!-- END_TF_DOCS -->
