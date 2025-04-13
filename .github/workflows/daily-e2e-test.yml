@@ -16,34 +16,26 @@ jobs:
       - name: 🐳 Start Portainer via Docker Compose
         run: make up
 
-      - name: 🛰️ Start Portainer Agent
-        run: |
-          docker run -d \
-            -p 9001:9001 \
-            --name portainer_agent \
-            --restart=always \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            -v /var/lib/docker/volumes:/var/lib/docker/volumes \
-            -v /:/host \
-            portainer/agent
+      - name: 🛠️ Install kubectl
+        run: make install-kubectl
 
-          docker network create portainer_net
+      - name: 🔧 Install k3d
+        run: make install-k3d
 
-          docker network connect portainer_net portainer
-          docker network connect portainer_net portainer_agent
+      - name: ☸️ Create K3d cluster
+        run: make k3d-up
 
-          IP_ADDRESSES=$(docker inspect -f '{{range $k, $v := .NetworkSettings.Networks}}{{println $v.IPAddress}}{{end}}' portainer_agent)
+      - name: ☸️ Verify K3d cluster
+        run: make k3d-status
 
-          AGENT_IP=$(echo "$IP_ADDRESSES" | sed -n '2p')
+      - name: 🧠 Deploy Portainer Agent into Kubernetes
+        run: make k8s-deploy-agent
 
-          if [ -z "$AGENT_IP" ]; then
-            echo "⚠️ Not found second IP address. Use first."
-            AGENT_IP=$(echo "$IP_ADDRESSES" | head -n 1)
-          fi
+      - name: 🧬 Connect Portainer to k3d network
+        run: make k3d-connect-portainer
 
-          echo "💡 Portainer Agent IP: $AGENT_IP"
-
-          echo "portainer_environment_address = \"tcp://$AGENT_IP:9001\"" > e2e-tests/environment/terraform.tfvars
+      - name: 🌐 Get Kubernetes server IP and export for Terraform
+        run: make k3d-export-ip
 
       - name: ⬇️ Install Terraform
         uses: hashicorp/setup-terraform@v3

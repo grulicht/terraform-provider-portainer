@@ -149,6 +149,8 @@ See our [examples](./docs/resources/) per resources in docs.
 | `portainer_kubernetes_clusterrolebinding`         | [kubernetes_clusterrolebinding.md](docs/resources/kubernetes_clusterrolebinding.md)    | [example](examples/kubernetes_clusterrolebinding/)          | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
 | `portainer_kubernetes_application`                | [kubernetes_application.md](docs/resources/kubernetes_application.md) | [example](examples/kubernetes_application/)    | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
 | `portainer_kubernetes_ingress`                    | [kubernetes_ingress.md](docs/resources/kubernetes_ingress.md)                          | [example](examples/kubernetes_ingress/)                     | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_kubernetes_volume`                    | [kubernetes_volume.md](docs/resources/kubernetes_volume.md)                          | [example](examples/kubernetes_volume/)                     | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
+| `portainer_kubernetes_storage`                    | [kubernetes_storage.md](docs/resources/kubernetes_storage.md)                          | [example](examples/kubernetes_storage/)                     | ![Done](https://img.shields.io/badge/status-done-brightgreen)     | ![Not yet](https://img.shields.io/badge/import-no-lightgrey)     | ![None](https://img.shields.io/badge/running-false-grey)  |
 
 ---
 
@@ -220,9 +222,36 @@ Thanks to the `portainer_data` directory included in this repository, a test use
 |--------------|----------------------------------------------------------------------------|
 | Username     | `admin`                                                                    |
 | Password     | `password123456789`                                                        |
-| API Token    | `ptr_xrP7XWqfZEOoaCJRu5c8qKaWuDtVc2Zb07Q5g22YpS8=`                          |
+| API Token    | `ptr_xrP7XWqfZEOoaCJRu5c8qKaWuDtVc2Zb07Q5g22YpS8=`                         |
 
 You can now apply your Terraform templates and observe changes live in the UI.
+
+### ☸️ Testing Kubernetes Resources Locally
+If you want to test Kubernetes-related resources, you can spin up a local Kubernetes cluster with [k3d](https://k3d.io/), deploy the Portainer Agent into it, and connect Portainer to that environment:
+
+```sh
+make install-k3d             # Install k3d CLI
+make k3d-up                  # Create a local k3d cluster
+make k8s-deploy-agent        # Deploy Portainer Agent into Kubernetes
+make k3d-connect-portainer   # Connect Portainer container to the k3d network
+make k3d-export-ip           # Export Kubernetes IP into terraform.tfvars
+```
+
+Then you can apply your Kubernetes environemnt from directory `e2e-tests/environment` run by:
+
+```sh
+cd e2e-tests/environment
+terraform init
+terraform apply
+```
+
+and than Kubernetes-related Terraform templates under e2e-tests/kubernetes* (or a similar directory):
+
+```sh
+cd e2e-tests/kubernetes*
+terraform init
+terraform apply
+```
 
 ### Testing a new version of the Portainer provider
 After making changes to the provider source code, follow these steps:
