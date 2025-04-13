@@ -1,7 +1,7 @@
 variable "portainer_url" {
   description = "Default Portainer URL"
   type        = string
-  default     = "http://localhost:9000"
+  # default     = "http://localhost:9000"
 }
 
 variable "portainer_api_key" {
@@ -9,7 +9,6 @@ variable "portainer_api_key" {
   type        = string
   sensitive   = true
   # default     = "your-api-key-from-portainer"
-  default = "ptr_xrP7XWqfZEOoaCJRu5c8qKaWuDtVc2Zb07Q5g22YpS8="
 }
 
 variable "environment_id" {

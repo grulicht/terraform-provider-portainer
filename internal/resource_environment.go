@@ -52,6 +52,21 @@ func resourceEnvironment() *schema.Resource {
 				Elem:        &schema.Schema{Type: schema.TypeInt},
 				Description: "List of tag IDs to assign to the environment.",
 			},
+			"tls_enabled": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
+			"tls_skip_verify": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
+			"tls_skip_client_verify": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  true,
+			},
 		},
 	}
 }
@@ -66,10 +81,9 @@ func resourceEnvironmentCreate(d *schema.ResourceData, meta interface{}) error {
 	_ = writer.WriteField("URL", d.Get("environment_address").(string))
 	_ = writer.WriteField("EndpointCreationType", strconv.Itoa(d.Get("type").(int)))
 	_ = writer.WriteField("GroupID", strconv.Itoa(d.Get("group_id").(int)))
-
-	_ = writer.WriteField("TLS", "true")
-	_ = writer.WriteField("TLSSkipVerify", "true")
-	_ = writer.WriteField("TLSSkipClientVerify", "true")
+	_ = writer.WriteField("TLS", strconv.FormatBool(d.Get("tls_enabled").(bool)))
+	_ = writer.WriteField("TLSSkipVerify", strconv.FormatBool(d.Get("tls_skip_verify").(bool)))
+	_ = writer.WriteField("TLSSkipClientVerify", strconv.FormatBool(d.Get("tls_skip_client_verify").(bool)))
 
 	if v, ok := d.GetOk("tag_ids"); ok {
 		tagIds := v.([]interface{})

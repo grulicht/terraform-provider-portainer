@@ -11,7 +11,6 @@ The `portainer_kubernetes_clusterrolebinding` resource allows you to deploy one-
 ```hcl
 resource "portainer_kubernetes_clusterrolebinding" "example" {
   endpoint_id = 4
-  namespace   = "default"
   manifest    = file("${path.module}/clusterrolebinding.yaml")
 }
 ```
@@ -36,7 +35,6 @@ terraform destroy
 | Name        | Type   | Required | Description                                                  |
 |-------------|--------|----------|--------------------------------------------------------------|
 | endpoint_id | int    | ✅ yes   | ID of the Portainer environment (Kubernetes cluster).        |
-| namespace   | string | ✅ yes   | Kubernetes namespace where the Clusterrolebinding should be created.    |
 | manifest    | string | ✅ yes   | Kubernetes Clusterrolebinding manifest (JSON or YAML as a string).      |
 
 ---

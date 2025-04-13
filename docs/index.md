@@ -103,6 +103,8 @@ $ export PORTAINER_SKIP_SSL_VERIFY=true
 | `portainer_kubernetes_clusterrolebinding`             | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 | `portainer_kubernetes_application`                    | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 | `portainer_kubernetes_ingress`                        | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_volume`                         | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
+| `portainer_kubernetes_storage`                        | ![Done](https://img.shields.io/badge/status-done-brightgreen) |
 
 ---
 

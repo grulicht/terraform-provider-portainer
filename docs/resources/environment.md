@@ -53,7 +53,9 @@ terraform apply
 | `type`                | int        | ✅ yes                       | Environment type: `1` = Docker, `2` = Agent, `3` = Azure, `4` = Edge Agent, `5` = Kubernetes.     |
 | `group_id`            | int        | 🚫 optional (default `1`)   | ID of the Portainer endpoint group. Default is `1` (Unassigned).                                 |
 | `tag_ids`             | list(int)  | 🚫 optional                 | List of Portainer tag IDs to assign to the environment. Only used during creation.              |
-
+| `tls_enabled`          | bool       | 🚫 optional (default `true`)| Enable TLS for connection to the agent. Must be `true` for agent-based environments.            |
+| `tls_skip_verify`      | bool       | 🚫 optional (default `true`)| Skip server certificate verification. Useful for self-signed certificates.                      |
+| `tls_skip_client_verify` | bool     | 🚫 optional (default `true`)| Skip client certificate verification. Used when mutual TLS is not required.                     |
 
 ## Attributes Reference
 

@@ -6,26 +6,35 @@ help:
 	@echo "Usage: make [target]"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  build          Compile the Terraform provider binary"
-	@echo "  install-plugin Install compiled provider binary to local Terraform plugin directory"
-	@echo "  init           Initialize Terraform in each examples/* project"
-	@echo "  validate       Validate Terraform configuration in each project"
-	@echo "  fmt-check      Check formatting of Terraform files"
-	@echo "  fmt            Format Terraform files"
-	@echo "  docs           Generate terraform-docs in each project (if main.tf exists)"
-	@echo "  o-init         Initialize OpenTofu in each examples/* project"
-	@echo "  o-validate     Validate OpenTofu configuration"
-	@echo "  o-fmt-check    Check formatting of OpenTofu files"
-	@echo "  o-fmt          Format OpenTofu files"
-	@echo "  up             Start Docker Compose services"
-	@echo "  launch         Open https://localhost:9000 in default browser"
-	@echo "  down           Stop Docker Compose services"
-	@echo "  go-fmt-check   Check formatting of Go source files"
-	@echo "  go-fmt         Format Go source files"
+	@echo "  build                  Compile the Terraform provider binary"
+	@echo "  install-plugin         Install compiled provider binary to local Terraform plugin directory"
+	@echo "  init                   Initialize Terraform in each examples/* project"
+	@echo "  validate               Validate Terraform configuration in each project"
+	@echo "  fmt-check              Check formatting of Terraform files"
+	@echo "  fmt                    Format Terraform files"
+	@echo "  docs                   Generate terraform-docs in each project (if main.tf exists)"
+	@echo "  o-init                 Initialize OpenTofu in each examples/* project"
+	@echo "  o-validate             Validate OpenTofu configuration"
+	@echo "  o-fmt-check            Check formatting of OpenTofu files"
+	@echo "  o-fmt                  Format OpenTofu files"
+	@echo "  up                     Start Docker Compose services"
+	@echo "  launch                 Open https://localhost:9000 in default browser"
+	@echo "  down                   Stop Docker Compose services"
+	@echo "  up-agent               Start Portainer Agent via docker-compose.agent.yml"
+	@echo "  down-agent             Stop Portainer Agent"
+	@echo "  install-k3d            Install k3d CLI"
+	@echo "  k3d-up                 Create local K3d cluster with 1 agent"
+	@echo "  k3d-status             Show Kubernetes nodes"
+	@echo "  k8s-deploy-agent       Deploy Portainer agent into K8s via LoadBalancer"
+	@echo "  k3d-connect-portainer  Connect Portainer container to k3d network"
+	@echo "  k3d-export-ip          Extract K3d IP and save terraform.tfvars"
+	@echo "  install-kubectl        Install latest kubectl CLI (auto-detects OS/arch)"
+	@echo "  go-fmt-check           Check formatting of Go source files"
+	@echo "  go-fmt                 Format Go source files"
 	@echo ""
 	@echo "Environment:"
-	@echo "  TDIR           Directory to run Terraform/OpenTofu in (set internally)"
-	@echo "  TCMD           Terraform/OpenTofu command (init, validate, fmt, etc.)"
+	@echo "  TDIR                   Directory to run Terraform/OpenTofu in (set internally)"
+	@echo "  TCMD                   Terraform/OpenTofu command (init, validate, fmt, etc.)"
 	@echo ""
 
 ### Terraform
@@ -134,6 +143,63 @@ launch:
 .PHONY: down
 down:
 	docker compose down
+
+.PHONY: up-agent
+up-agent:
+	docker compose -f docker-compose.agent.yml up -d
+
+.PHONY: down-agent
+down-agent:
+	docker compose -f docker-compose.agent.yml down
+
+### Kubernetes / k3d
+.PHONY: install-k3d
+install-k3d:
+	curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+.PHONY: k3d-up
+k3d-up:
+	k3d cluster create mycluster --agents 1 -p "9001:32194@agent:0"
+
+.PHONY: k3d-status
+k3d-status:
+	kubectl get nodes
+
+.PHONY: k8s-deploy-agent
+k8s-deploy-agent:
+	kubectl apply -f https://downloads.portainer.io/ce2-27/portainer-agent-k8s-lb.yaml
+
+.PHONY: k3d-connect-portainer
+k3d-connect-portainer:
+	docker network connect k3d-mycluster portainer || true
+
+.PHONY: k3d-export-ip
+k3d-export-ip:
+	@IP=$$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' k3d-mycluster-server-0); \
+	echo "💡 K3D Server IP: $$IP"; \
+	echo "portainer_environment_address = \"tcp://$$IP:9001\"" > e2e-tests/environment/terraform.tfvars
+
+.PHONY: install-kubectl
+install-kubectl:
+	@echo "🔍 Detecting platform and architecture..."
+	@ARCH=$$(uname -m); \
+	case $$ARCH in \
+	  x86_64) ARCH=amd64 ;; \
+	  arm64|aarch64) ARCH=arm64 ;; \
+	  *) echo "❌ Unsupported architecture: $$ARCH" && exit 1 ;; \
+	esac; \
+	OS=$$(uname | tr '[:upper:]' '[:lower:]'); \
+	if [ "$$OS" != "linux" ] && [ "$$OS" != "darwin" ]; then \
+		echo "❌ Unsupported OS: $$OS"; exit 1; \
+	fi; \
+	VERSION=$$(curl -L -s https://dl.k8s.io/release/stable.txt); \
+	URL="https://dl.k8s.io/release/$$VERSION/bin/$$OS/$$ARCH/kubectl"; \
+	echo "⬇️ Downloading kubectl $$VERSION for $$OS/$$ARCH..."; \
+	curl -LO "$$URL"; \
+	chmod +x kubectl; \
+	install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl; \
+	rm -f kubectl; \
+	echo "✅ kubectl installed to /usr/local/bin"
 
 ### Go
 .PHONY: go-fmt-check
