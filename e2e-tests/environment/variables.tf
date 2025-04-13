@@ -28,21 +28,3 @@ variable "portainer_environment_type" {
   type        = number
   default     = 2 # Environment type: `1` = Docker, `2` = Agent, `3` = Azure, `4` = Edge Agent, `5` = Kubernetes.
 }
-
-variable "tls_enabled" {
-  description = "Enable TLS for the agent connection"
-  type        = bool
-  default     = false
-}
-
-variable "tls_skip_verify" {
-  description = "Skip server certificate verification (insecure)"
-  type        = bool
-  default     = false
-}
-
-variable "tls_skip_client_verify" {
-  description = "Skip client certificate verification (insecure)"
-  type        = bool
-  default     = false
-}

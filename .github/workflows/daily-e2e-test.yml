@@ -37,9 +37,6 @@ jobs:
       - name: 🌐 Get Kubernetes server IP and export for Terraform
         run: make k3d-export-ip
 
-      - name: 📦 Check agent pods
-        run: kubectl get pods -A | grep portainer-agent
-
       - name: ⬇️ Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
