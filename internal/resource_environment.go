@@ -67,7 +67,6 @@ func resourceEnvironment() *schema.Resource {
 				Optional: true,
 				Default:  true,
 			},
-
 		},
 	}
 }
