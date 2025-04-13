@@ -26,5 +26,5 @@ variable "portainer_environment_address" {
 variable "portainer_environment_type" {
   description = "Portainer environment type"
   type        = number
-  default     = 5 # Environment type: `1` = Docker, `2` = Agent, `3` = Azure, `4` = Edge Agent, `5` = Kubernetes.
+  default     = 2 # Environment type: `1` = Docker, `2` = Agent, `3` = Azure, `4` = Edge Agent, `5` = Kubernetes.
 }
