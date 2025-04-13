@@ -168,6 +168,7 @@ k3d-status:
 .PHONY: k8s-deploy-agent
 k8s-deploy-agent:
 	kubectl apply -f https://downloads.portainer.io/ce2-27/portainer-agent-k8s-lb.yaml
+	kubectl -n portainer wait --for=condition=available deployment/portainer-agent --timeout=120s
 
 .PHONY: k3d-connect-portainer
 k3d-connect-portainer:
