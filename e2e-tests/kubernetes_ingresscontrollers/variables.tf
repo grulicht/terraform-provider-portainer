@@ -27,12 +27,14 @@ variable "controllers" {
     used         = bool
     new          = bool
   }))
-  default = {
-    name         = "nginx"
-    class_name   = "nginx"
-    type         = "ingress"
-    availability = true
-    used         = true
-    new          = false
-  }
+  default = [
+    {
+      name         = "nginx"
+      class_name   = "nginx"
+      type         = "ingress"
+      availability = true
+      used         = true
+      new          = false
+    }
+  ]
 }

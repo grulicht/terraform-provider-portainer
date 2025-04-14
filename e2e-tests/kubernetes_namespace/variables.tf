@@ -20,7 +20,7 @@ variable "environment_id" {
 variable "namespace_name" {
   description = "Name of the Kubernetes namespace to create."
   type        = string
-  default     = "Test Kubernetes Environment"
+  default     = "test-kubernetes-environment"
 }
 
 variable "namespace_owner" {
